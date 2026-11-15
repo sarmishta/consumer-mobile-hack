@@ -21,7 +21,7 @@ export function RaincheckMoment({ data, onClose }: { data: RaincheckMomentData; 
           justifyContent: "center",
         }}
       >
-        <Text style={{ fontSize: 52 }}>{clean ? "🌙" : "☔️"}</Text>
+        <Text style={{ fontSize: 52, lineHeight: 64 }}>{clean ? "🌙" : "☔️"}</Text>
       </View>
       {data.mine ? (
         <>

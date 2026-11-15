@@ -121,7 +121,7 @@ export function buildSlides(week: Week): Slide[] {
     background: colors.rainSoft,
     content: (
       <View style={{ gap: spacing.lg, alignItems: "center" }}>
-        <Text style={{ fontSize: 72 }}>🌙</Text>
+        <Text style={{ fontSize: 72, lineHeight: 86 }}>🌙</Text>
         <Text variant="largeTitle" align="center">
           Bad days, good nights.
         </Text>
