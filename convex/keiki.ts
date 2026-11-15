@@ -34,7 +34,8 @@ export const memberByPhone = internalQuery({
     const user = await ctx.db
       .query("users")
       .withIndex("by_phone", (q) => q.eq("phone", args.phone))
-      .unique();
+      .order("desc")
+      .first();
     if (!user) return { status: "unknown_phone" as const };
     const member = await ctx.db
       .query("members")
@@ -61,6 +62,11 @@ export const seedTestUser = internalMutation({
   handler: async (ctx, args) => {
     const phone = normalizePhone(args.phone);
     if (!phone) throw new Error("Invalid phone");
+    const holders = await ctx.db
+      .query("users")
+      .withIndex("by_phone", (q) => q.eq("phone", phone))
+      .take(10);
+    for (const holder of holders) await ctx.db.patch("users", holder._id, { phone: undefined });
     const userId = await ctx.db.insert("users", { name: args.name, avatar: "🌧️", phone });
     const groupId = await ctx.db.insert("groups", {
       name: "Keiki test crew",
