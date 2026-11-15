@@ -20,6 +20,7 @@ import type * as members from "../members.js";
 import type * as profile from "../profile.js";
 import type * as rainchecks from "../rainchecks.js";
 import type * as reel from "../reel.js";
+import type * as stake from "../stake.js";
 import type * as users from "../users.js";
 
 import type {
@@ -41,6 +42,7 @@ declare const fullApi: ApiFromModules<{
   profile: typeof profile;
   rainchecks: typeof rainchecks;
   reel: typeof reel;
+  stake: typeof stake;
   users: typeof users;
 }>;
 

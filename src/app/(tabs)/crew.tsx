@@ -9,6 +9,8 @@ import { RaincheckCard } from "../../components/crew/RaincheckCard";
 import { RaincheckMoment } from "../../components/crew/RaincheckMoment";
 import { Sheet } from "../../components/crew/Sheet";
 import { formatDay } from "../../components/crew/format";
+import { StakePicker } from "../../components/onboarding/StakePicker";
+import type { StakeKind } from "../../components/onboarding/options";
 import { Sticker } from "../../components/fun";
 import { Avatar, Button, Icon, LargeTitle, Row, Screen, Section, Text } from "../../components/ui";
 import { useCurrentMember } from "../../lib/session";
@@ -22,6 +24,9 @@ export default function Crew() {
   const cashed = useQuery(api.crew.cashedIn, groupArgs);
   const endDay = useMutation(api.rainchecks.endDay);
   const renameCrew = useMutation(api.crewName.rename);
+  const setStake = useMutation(api.stake.setStake);
+  const [stakeDraft, setStakeDraft] = useState<{ kind: StakeKind | null; stake: string } | null>(null);
+  const [savingStake, setSavingStake] = useState(false);
   const [endedDay, setEndedDay] = useState<string | null>(null);
   const [ending, setEnding] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -98,6 +103,14 @@ export default function Crew() {
               group.name,
             )
           }
+        />
+        <Row
+          testID="edit-stake"
+          title="What you owe"
+          value={group.hangout ?? "Not set"}
+          icon="gift.fill"
+          iconColor={colors.coral}
+          onPress={() => setStakeDraft({ kind: group.stakeKind ?? null, stake: group.hangout ?? "" })}
         />
         <Row
           testID="invite-share"
@@ -204,6 +217,36 @@ export default function Crew() {
           onPress={() => setConfirming(true)}
         />
       </View>
+
+      <Sheet visible={!!stakeDraft} onClose={() => setStakeDraft(null)}>
+        <Text variant="largeTitle" style={{ fontSize: 30, lineHeight: 36 }}>
+          What you owe
+        </Text>
+        <Text variant="callout" color={colors.secondaryLabel}>
+          What does a missed day cost your crew?
+        </Text>
+        {stakeDraft ? (
+          <StakePicker kind={stakeDraft.kind} stake={stakeDraft.stake} onChange={(kind, stake) => setStakeDraft({ kind, stake })} />
+        ) : null}
+        <Button
+          testID="stake-save"
+          label="Save"
+          loading={savingStake}
+          disabled={!stakeDraft?.kind || !stakeDraft.stake.trim()}
+          onPress={async () => {
+            if (!stakeDraft?.kind) return;
+            setSavingStake(true);
+            try {
+              await setStake({ groupId: group._id, stake: stakeDraft.stake, kind: stakeDraft.kind });
+              setStakeDraft(null);
+            } catch {
+              Alert.alert("Couldn't save that", "Try again in a sec.");
+            } finally {
+              setSavingStake(false);
+            }
+          }}
+        />
+      </Sheet>
 
       <Sheet
         visible={confirming || !!moment}

@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Animated, View } from "react-native";
 import { api } from "../../../convex/_generated/api";
-import { HANGOUTS, KINDS, NUDGE_TIMES } from "../../components/onboarding/options";
+import { KINDS, NUDGE_TIMES } from "../../components/onboarding/options";
 import { FallingRaindrop } from "../../components/onboarding/Raindrop";
 import { useOnboarding } from "../../components/onboarding/store";
 import { Button, Icon, Screen, Text } from "../../components/ui";
@@ -20,6 +20,7 @@ export default function MakingYourCrew() {
   const createGroup = useMutation(api.groups.create);
   const setGoal = useMutation(api.members.setGoal);
   const setPrefs = useMutation(api.profile.setMemberPrefs);
+  const setStake = useMutation(api.stake.setStake);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const started = useRef(-1);
@@ -28,7 +29,7 @@ export default function MakingYourCrew() {
     `${answers.emoji} ${answers.goal}`,
     `${KINDS.find((k) => k.kind === answers.kind)?.label ?? "Your"} crew`,
     `Nudge at ${NUDGE_TIMES.find((t) => t.value === answers.nudgeTime)?.label ?? "6 pm"}`,
-    `Missed day = ${answers.hangout || HANGOUTS[0].label.toLowerCase()}`,
+    `Miss a day, owe ${answers.hangout.trim() || "tacos"}`,
   ];
   const [ticks] = useState(() => lines.map(() => new Animated.Value(0)));
 
@@ -46,7 +47,7 @@ export default function MakingYourCrew() {
       const kind = answers.kind ?? "friends";
       const userId = await createUser({ name: "Me", avatar: AVATARS[Math.floor(Math.random() * AVATARS.length)] });
       const label = answers.goal.trim() || "Daily";
-      await createGroup({
+      const groupId = await createGroup({
         userId,
         kind,
         today: localToday(),
@@ -58,6 +59,11 @@ export default function MakingYourCrew() {
       const memberId = mine.member._id;
       await setGoal({ memberId, goal: label, emoji: answers.emoji });
       await setPrefs({ memberId, goalType: answers.goalType ?? "custom", nudgeTime: answers.nudgeTime ?? "18:00" });
+      if (answers.stakeKind && answers.hangout.trim()) {
+        await setStake({ groupId, stake: answers.hangout, kind: answers.stakeKind }).catch((e) =>
+          console.warn("Saving stake kind failed", e),
+        );
+      }
       await setUserId(userId);
     };
 

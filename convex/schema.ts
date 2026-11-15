@@ -23,6 +23,7 @@ export default defineSchema({
     kind: groupKind,
     currentDay: v.string(),
     hangout: v.optional(v.string()),
+    stakeKind: v.optional(v.union(v.literal("hangout"), v.literal("treat"), v.literal("favor"), v.literal("dare"))),
   }).index("by_inviteCode", ["inviteCode"]),
   members: defineTable({
     groupId: v.id("groups"),

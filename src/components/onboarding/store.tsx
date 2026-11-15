@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
-import type { GoalType, GroupKind } from "./options";
+import type { GoalType, GroupKind, StakeKind } from "./options";
 
 export type OnboardingAnswers = {
   goalType: GoalType | null;
@@ -9,6 +9,7 @@ export type OnboardingAnswers = {
   kind: GroupKind | null;
   nudgeTime: string | null;
   hangout: string;
+  stakeKind: StakeKind | null;
 };
 
 type Store = OnboardingAnswers & { set: (patch: Partial<OnboardingAnswers>) => void };
@@ -23,6 +24,7 @@ export function OnboardingProvider({ children }: { children: ReactNode }) {
     kind: null,
     nudgeTime: null,
     hangout: "",
+    stakeKind: null,
   });
   const set = (patch: Partial<OnboardingAnswers>) => setAnswers((prev) => ({ ...prev, ...patch }));
   return <OnboardingContext.Provider value={{ ...answers, set }}>{children}</OnboardingContext.Provider>;
