@@ -54,6 +54,7 @@ export default function JoinWithCode() {
           autoCapitalize="characters"
           autoCorrect={false}
           autoFocus
+          returnKeyType="done"
           maxLength={6}
           style={{ fontSize: 32, fontWeight: "700", letterSpacing: 8, textAlign: "center" }}
         />

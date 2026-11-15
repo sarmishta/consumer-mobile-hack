@@ -5,6 +5,9 @@ import type { ComponentProps, ReactNode } from "react";
 import {
   ActivityIndicator,
   Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   Text as RNText,
   ScrollView,
@@ -97,18 +100,25 @@ export function Screen({
   const pad = padded ? { paddingHorizontal: spacing.lg } : null;
   return (
     <SafeAreaView edges={edges} style={{ flex: 1, backgroundColor: background }}>
-      {scroll ? (
-        <ScrollView
-          contentContainerStyle={[pad, { paddingBottom: footer ? 120 : spacing.huge }, style]}
-          keyboardShouldPersistTaps="handled"
-          contentInsetAdjustmentBehavior="automatic"
-        >
-          {children}
-        </ScrollView>
-      ) : (
-        <View style={[{ flex: 1 }, pad, style]}>{children}</View>
-      )}
-      {footer ? <BlurBar>{footer}</BlurBar> : null}
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          {scroll ? (
+            <ScrollView
+              contentContainerStyle={[pad, { paddingBottom: 120 }, style]}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="interactive"
+              contentInsetAdjustmentBehavior="automatic"
+            >
+              {children}
+            </ScrollView>
+          ) : (
+            <Pressable accessible={false} onPress={Keyboard.dismiss} style={[{ flex: 1 }, pad, style]}>
+              {children}
+            </Pressable>
+          )}
+          {footer ? <BlurBar>{footer}</BlurBar> : null}
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
