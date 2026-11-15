@@ -55,7 +55,7 @@ export default function MakingYourCrew() {
         name: "My crew",
       });
       const mine = await convex.query(api.groups.mine, { userId });
-      if (!mine) throw new Error("Member row missing after group create");
+      if (!mine) throw new Error("Member row missing after crew create");
       const memberId = mine.member._id;
       await setGoal({ memberId, goal: label, emoji: answers.emoji });
       await setPrefs({ memberId, goalType: answers.goalType ?? "custom", nudgeTime: answers.nudgeTime ?? "18:00" });

@@ -31,7 +31,7 @@ export function RaincheckMoment({ data, onClose }: { data: RaincheckMomentData; 
             Missed today? No fine.
           </Text>
           <Sticker
-            label={"You owe " + data.mine.plan}
+            label={"You owe the crew " + data.mine.plan}
             color={colors.coral}
             ink={colors.white}
             tilt={-4}
@@ -49,7 +49,7 @@ export function RaincheckMoment({ data, onClose }: { data: RaincheckMomentData; 
           {data.others.map((other, i) => (
             <Sticker
               key={i}
-              label={other.name + " owes " + other.plan}
+              label={other.name + " owes the crew " + other.plan}
               color={i % 2 ? colors.accent : colors.coral}
               ink={i % 2 ? colors.label : colors.white}
               tilt={i % 2 ? 4 : -4}

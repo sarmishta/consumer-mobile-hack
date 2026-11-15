@@ -12,7 +12,7 @@ export function EndDayConfirm({ onCancel, onConfirm }: { onCancel: () => void; o
         </Text>
       </View>
       <Text variant="body" color={colors.secondaryLabel}>
-        Anyone without a check-in gets a raincheck: a hangout they owe the crew.
+        Anyone who hasn&apos;t checked in gets a raincheck and owes the crew.
       </Text>
       <Button testID="end-day-confirm" label="End day" icon="moon.fill" haptic onPress={onConfirm} style={{ marginTop: spacing.md }} />
       <Button testID="end-day-cancel" label="Not yet" variant="plain" onPress={onCancel} />

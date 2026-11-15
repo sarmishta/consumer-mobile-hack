@@ -120,7 +120,7 @@ export default function Crew() {
           iconColor={colors.rain}
           onPress={() =>
             Share.share({
-              message: `Join ${group.name} on RAINCHECK. Invite code: ${group.inviteCode}. Bad days, good nights.`,
+              message: `Join ${group.name} on Raincheck. Code: ${group.inviteCode}. Bad days, good nights.`,
             })
           }
         />
@@ -197,8 +197,8 @@ export default function Crew() {
           {cashed.map((raincheck) => (
             <Row
               key={raincheck._id}
-              title={`${raincheck.name} · ${raincheck.plan}`}
-              subtitle={`Owed from ${formatDay(raincheck.day)}`}
+              title={`${raincheck.name} made good on ${raincheck.plan}`}
+              subtitle={`Missed ${formatDay(raincheck.day)}`}
               left={<Avatar name={raincheck.name} photoUrl={raincheck.photoUrl} emoji={raincheck.avatar} size={40} />}
               right={<Icon name="checkmark.seal.fill" size={22} color={colors.mint} />}
             />

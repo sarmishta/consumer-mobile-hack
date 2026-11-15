@@ -61,7 +61,7 @@ export default function CashIn() {
           </PopIn>
         </View>
         <Text variant="display" align="center">
-          Raincheck cashed!
+          Raincheck cashed.
         </Text>
         {raincheck ? (
           <Sticker
@@ -113,14 +113,14 @@ export default function CashIn() {
           {raincheck.name} owes the crew {raincheck.plan}
         </Text>
         <Text variant="body" align="center" color={colors.secondaryLabel}>
-          Did the hangout happen? Add a photo and close it out.
+          Did it happen? Add a photo and close it out.
         </Text>
       </View>
       <Pressable testID="cashin-photo" accessibilityRole="button" onPress={pickPhoto} style={{ marginTop: spacing.xxl }}>
         {photo ? (
           <Image source={{ uri: photo.uri }} style={{ height: 260, borderRadius: radius.lg }} />
         ) : (
-          <Placeholder height={260} icon="camera.fill" label="Add a hangout photo (optional)" tint="coral" />
+          <Placeholder height={260} icon="camera.fill" label="Add a photo (optional)" tint="coral" />
         )}
       </Pressable>
     </Screen>

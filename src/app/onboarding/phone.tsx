@@ -59,7 +59,7 @@ export default function PhoneStep() {
         style={{ marginTop: spacing.xxl }}
       />
       <Text variant="footnote" color={error ? colors.danger : colors.tertiaryLabel} style={{ marginTop: spacing.sm }}>
-        {error ?? (raw && !phone ? "US numbers work as is. Add +country code otherwise." : "One text a day. Msg & data rates may apply.")}
+        {error ?? (raw && !phone ? "US numbers work as is. Otherwise, start with your country code." : "One text a day. Msg & data rates may apply.")}
       </Text>
     </Screen>
   );

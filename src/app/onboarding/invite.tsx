@@ -35,9 +35,8 @@ export default function Invite() {
   const { group, member } = current;
   const code = group.inviteCode;
   const link = Linking.createURL("onboarding/join", { queryParams: { code } });
-  const goal = (member.goal ?? "show up").replace(/^./, (c) => c.toLowerCase());
-  const owe = group.hangout ?? "a hangout";
-  const message = `Join my Raincheck crew: ${goal} daily, miss a day and you owe ${owe}. Code ${code} ${link}`;
+  const owe = group.hangout ?? "tacos";
+  const message = `Join my crew on Raincheck. We each pick a daily goal, and if you miss a day you owe the crew ${owe}. Code: ${code} ${link}`;
 
   const share = async (channel: string) => {
     try {
@@ -80,7 +79,7 @@ export default function Invite() {
         Your crew is ready.
       </Text>
       <Text variant="callout" weight="600" color={colors.secondaryLabel} style={{ marginTop: spacing.sm }}>
-        Invite up to 5 people. It’s more fun when someone else might owe tacos.
+        Invite up to 5 people. It&apos;s more fun when someone else might owe {owe}.
       </Text>
 
       <GradientCard colors={gradients.story} style={{ marginTop: spacing.xxl, alignItems: "center", gap: spacing.sm }}>

@@ -24,7 +24,7 @@ export default function Splash() {
         </Text>
         <Sticker label="Bad days, good nights." color={colors.coral} ink={colors.white} tilt={-4} delay={200} style={{ alignSelf: "center", marginTop: spacing.sm }} />
         <Text variant="callout" weight="600" color={colors.secondaryLabel} align="center" style={{ marginTop: spacing.xl, maxWidth: 280 }}>
-          A daily goal with your people. Miss a day and you owe them a hangout.
+          Everyone picks a daily goal. Miss a day and you owe your crew.
         </Text>
       </View>
     </Screen>

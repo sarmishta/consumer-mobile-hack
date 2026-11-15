@@ -113,7 +113,7 @@ export function buildSlides(week: Week): Slide[] {
           {week.owed.slice(0, 4).map((raincheck, i) => (
             <Sticker
               key={raincheck._id}
-              label={raincheck.name + " owes " + raincheck.plan}
+              label={raincheck.name + " owes the crew " + raincheck.plan}
               color={colors.accent}
               tilt={i % 2 ? 4 : -4}
               delay={400 + i * 120}
