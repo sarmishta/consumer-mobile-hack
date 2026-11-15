@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import type { MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
+import { groupKind } from "./schema";
 
 const MAX_MEMBERS = 6;
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -37,8 +38,9 @@ export const create = mutation({
   args: {
     userId: v.id("users"),
     name: v.string(),
-    kind: v.union(v.literal("friends"), v.literal("family")),
+    kind: groupKind,
     today: v.string(),
+    hangout: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const name = args.name.trim();
@@ -49,6 +51,7 @@ export const create = mutation({
       inviteCode: await uniqueInviteCode(ctx),
       kind: args.kind,
       currentDay: args.today,
+      hangout: args.hangout?.trim().slice(0, 40) || undefined,
     });
     await ctx.db.insert("members", { groupId, userId: args.userId, streak: 0 });
     return groupId;

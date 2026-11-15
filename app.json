@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.sarmishta.consumermobilehack"
@@ -25,8 +25,16 @@
     "scheme": "consumermobilehack",
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "RAINCHECK uses your photos so you can share check-in and hangout pictures with your crew.",
+          "cameraPermission": "RAINCHECK uses your camera so you can snap check-in and hangout pictures for your crew."
+        }
+      ],
+      "expo-font"
     ],
-    "backgroundColor": "#0F1530"
+    "backgroundColor": "#F2F2F7"
   }
 }
