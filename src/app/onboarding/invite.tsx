@@ -3,10 +3,11 @@ import * as Linking from "expo-linking";
 import { router } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Pressable, Share, View } from "react-native";
-import { Button, Card, Icon, Screen, Text } from "../../components/ui";
+import { AnimatedEmoji, GradientCard, Sticker } from "../../components/fun";
+import { Button, Icon, Screen, Text } from "../../components/ui";
 import type { SymbolName } from "../../components/ui";
 import { useCurrentMember } from "../../lib/session";
-import { colors, radius, spacing } from "../../lib/theme";
+import { colors, gradients, radius, spacing } from "../../lib/theme";
 
 type Channel = { id: string; label: string; icon: SymbolName };
 
@@ -75,23 +76,24 @@ export default function Invite() {
         </View>
       }
     >
-      <Text variant="title1" style={{ marginTop: spacing.xxl }}>
-        Your crew is ready.
-      </Text>
-      <Text variant="callout" color={colors.secondaryLabel} style={{ marginTop: spacing.sm }}>
+      <View style={{ flexDirection: "row", alignItems: "center", marginTop: spacing.xxl, gap: spacing.sm }}>
+        <Text variant="largeTitle" style={{ flex: 1 }}>
+          Your crew is ready.
+        </Text>
+        <AnimatedEmoji name="partying" size={64} />
+      </View>
+      <Text variant="callout" weight="600" color={colors.secondaryLabel} style={{ marginTop: spacing.sm }}>
         Invite up to 5 people. It’s more fun when someone else might owe tacos.
       </Text>
 
-      <Card style={{ marginTop: spacing.xxl, alignItems: "center", gap: spacing.sm }}>
-        <Text variant="footnote" color={colors.secondaryLabel} weight="600">
-          INVITE CODE
-        </Text>
+      <GradientCard colors={gradients.story} style={{ marginTop: spacing.xxl, alignItems: "center", gap: spacing.sm }}>
+        <Sticker label="INVITE CODE" color={colors.white} tilt={-4} size="sm" style={{ alignSelf: "center" }} />
         <View testID="invite-code">
-          <Text variant="largeTitle" style={{ fontSize: 44, letterSpacing: 6 }}>
+          <Text variant="display" color={colors.white} style={{ fontSize: 50, lineHeight: 58, letterSpacing: 6 }}>
             {code}
           </Text>
         </View>
-        <Text variant="caption" color={colors.tertiaryLabel} numberOfLines={1}>
+        <Text variant="caption" color="rgba(255,255,255,0.85)" numberOfLines={1}>
           {link}
         </Text>
         <Button
@@ -103,7 +105,7 @@ export default function Invite() {
           onPress={copy}
           style={{ marginTop: spacing.sm }}
         />
-      </Card>
+      </GradientCard>
 
       <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: spacing.xxl }}>
         {CHANNELS.map((c) => (
@@ -119,15 +121,17 @@ export default function Invite() {
               style={{
                 width: 60,
                 height: 60,
-                borderRadius: radius.lg,
+                borderRadius: radius.pill,
                 backgroundColor: colors.surface,
+                borderWidth: 2,
+                borderColor: colors.label,
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
               <Icon name={c.icon} size={26} color={colors.label} />
             </View>
-            <Text variant="caption" color={colors.secondaryLabel}>
+            <Text variant="caption" weight="700" color={colors.label}>
               {c.label}
             </Text>
           </Pressable>

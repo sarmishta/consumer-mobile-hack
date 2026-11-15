@@ -7,7 +7,8 @@ import { CrewRow } from "../../components/home/CrewRow";
 import { dayNumber, prettyDay } from "../../components/home/dates";
 import { FeedItem } from "../../components/home/FeedItem";
 import { GoalCard } from "../../components/home/GoalCard";
-import { Button, LargeTitle, Placeholder, Screen, Text } from "../../components/ui";
+import { AnimatedEmoji, Sticker } from "../../components/fun";
+import { Button, LargeTitle, Screen, Text } from "../../components/ui";
 import { useCurrentMember } from "../../lib/session";
 import { colors, spacing } from "../../lib/theme";
 
@@ -36,7 +37,14 @@ export default function Home() {
     <Screen scroll>
       <LargeTitle
         eyebrow={`Day ${dayNumber(board.group.currentDay, board.group._creationTime)} · ${prettyDay(board.group.currentDay)}`}
-        subtitle={`${done} of ${board.members.length} checked in`}
+        right={
+          <Sticker
+            label={`${done}/${board.members.length} in`}
+            color={done === board.members.length ? colors.mint : colors.coral}
+            ink={colors.white}
+            tilt={6}
+          />
+        }
       >
         {board.group.name}
       </LargeTitle>
@@ -48,7 +56,7 @@ export default function Home() {
       <GoalCard emoji={me?.emoji ?? null} goal={me?.goal ?? null} streak={me?.streak ?? member.streak} mine={mine} />
 
       <View style={{ flexDirection: "row", alignItems: "center", marginTop: spacing.xxl, marginBottom: spacing.sm }}>
-        <Text variant="title3" style={{ flex: 1 }}>
+        <Text variant="largeTitle" style={{ flex: 1, fontSize: 28, lineHeight: 34 }}>
           Today
         </Text>
         {selected ? (
@@ -57,11 +65,21 @@ export default function Home() {
       </View>
 
       {feed.items.length === 0 ? (
-        <View testID="feed-empty">
-          <Placeholder height={180} icon="figure.walk" tint="amber" label="First check-in? Shoes on counts." />
-          <Text variant="footnote" color={colors.secondaryLabel} align="center" style={{ marginTop: spacing.sm }}>
-            Bad days, good nights.
+        <View
+          testID="feed-empty"
+          style={{
+            alignItems: "center",
+            backgroundColor: colors.accentSoft,
+            borderRadius: 28,
+            paddingVertical: spacing.xxl,
+            gap: spacing.sm,
+          }}
+        >
+          <AnimatedEmoji name="wave" size={84} />
+          <Text variant="title3" align="center">
+            First check-in? Shoes on counts.
           </Text>
+          <Sticker label="Bad days, good nights." color={colors.white} tilt={-3} size="sm" style={{ alignSelf: "center" }} />
         </View>
       ) : (
         <View style={{ gap: spacing.md }}>

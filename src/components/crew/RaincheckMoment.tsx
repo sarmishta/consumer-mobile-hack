@@ -1,5 +1,6 @@
 import { View } from "react-native";
 import { colors, spacing } from "../../lib/theme";
+import { AnimatedEmoji, PopIn, Sticker } from "../fun";
 import { Button, Text } from "../ui";
 
 export type RaincheckMomentData = {
@@ -11,42 +12,56 @@ export function RaincheckMoment({ data, onClose }: { data: RaincheckMomentData; 
   const clean = !data.mine && data.others.length === 0;
   return (
     <View style={{ alignItems: "center", gap: spacing.lg }}>
-      <View
+      <PopIn
+        tilt={-6}
         style={{
-          width: 96,
-          height: 96,
-          borderRadius: 48,
-          backgroundColor: clean ? colors.accentSoft : colors.coralSoft,
+          width: 132,
+          height: 132,
+          borderRadius: 66,
+          backgroundColor: clean ? colors.grapeSoft : colors.coralSoft,
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Text style={{ fontSize: 52, lineHeight: 64 }}>{clean ? "🌙" : "☔️"}</Text>
-      </View>
+        <AnimatedEmoji name={clean ? "moon" : "umbrella"} size={96} />
+      </PopIn>
       {data.mine ? (
         <>
-          <Text variant="title2" align="center">
+          <Text variant="largeTitle" align="center" style={{ fontSize: 32, lineHeight: 38 }}>
             Missed today? No fine.
           </Text>
-          <Text variant="title3" align="center" color={colors.coral}>
-            You owe the crew {data.mine.plan}.
-          </Text>
+          <Sticker
+            label={"You owe " + data.mine.plan}
+            color={colors.coral}
+            ink={colors.white}
+            emoji={/taco/i.test(data.mine.plan) ? "taco" : undefined}
+            tilt={-4}
+            delay={250}
+            style={{ alignSelf: "center" }}
+          />
         </>
       ) : (
-        <Text variant="title2" align="center">
+        <Text variant="largeTitle" align="center" style={{ fontSize: 32, lineHeight: 38 }}>
           {clean ? "Clean sweep. Everyone showed up." : "The day's done."}
         </Text>
       )}
       {data.others.length > 0 ? (
-        <View style={{ gap: spacing.xs }}>
+        <View style={{ gap: spacing.sm, alignItems: "center" }}>
           {data.others.map((other, i) => (
-            <Text key={i} variant="callout" align="center" color={colors.secondaryLabel}>
-              {other.name} owes the crew {other.plan}
-            </Text>
+            <Sticker
+              key={i}
+              label={other.name + " owes " + other.plan}
+              color={i % 2 ? colors.accent : colors.coral}
+              ink={i % 2 ? colors.label : colors.white}
+              emoji={/taco/i.test(other.plan) ? "taco" : undefined}
+              tilt={i % 2 ? 4 : -4}
+              delay={350 + i * 150}
+              style={{ alignSelf: "center" }}
+            />
           ))}
         </View>
       ) : null}
-      <Text variant="footnote" color={colors.tertiaryLabel} align="center">
+      <Text variant="footnote" color={colors.secondaryLabel} align="center">
         Bad days, good nights.
       </Text>
       <Button testID="raincheck-moment-close" label="Deal" onPress={onClose} style={{ alignSelf: "stretch" }} />

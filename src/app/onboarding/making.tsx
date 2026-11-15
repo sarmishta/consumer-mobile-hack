@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { Animated, View } from "react-native";
 import { api } from "../../../convex/_generated/api";
 import { HANGOUTS, KINDS, NUDGE_TIMES } from "../../components/onboarding/options";
-import { FallingRaindrop } from "../../components/onboarding/Raindrop";
+import { AnimatedEmoji } from "../../components/fun";
 import { useOnboarding } from "../../components/onboarding/store";
 import { Button, Icon, Screen, Text } from "../../components/ui";
 import { useSession } from "../../lib/session";
-import { AVATARS, colors, localToday, spacing } from "../../lib/theme";
+import { AVATARS, colors, localToday, radius, spacing } from "../../lib/theme";
 
 const MIN_MS = 2600;
 
@@ -71,10 +71,10 @@ export default function MakingYourCrew() {
   }, [attempt]);
 
   return (
-    <Screen background={colors.surface}>
+    <Screen background={colors.rainSoft}>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: spacing.xxl }}>
-        <FallingRaindrop />
-        <Text variant="title2" align="center">
+        <AnimatedEmoji name={error ? "umbrella" : "rain"} size={150} />
+        <Text variant="largeTitle" align="center">
           {error ? "Hit a puddle." : "Making your crew…"}
         </Text>
         <View style={{ gap: spacing.md, alignSelf: "stretch", paddingHorizontal: spacing.xxl }}>
@@ -86,12 +86,20 @@ export default function MakingYourCrew() {
                 flexDirection: "row",
                 alignItems: "center",
                 gap: spacing.md,
+                backgroundColor: colors.surface,
+                borderRadius: radius.pill,
+                paddingVertical: spacing.sm,
+                paddingHorizontal: spacing.md,
                 opacity: ticks[i],
-                transform: [{ translateY: ticks[i].interpolate({ inputRange: [0, 1], outputRange: [8, 0] }) }],
+                transform: [
+                  { translateY: ticks[i].interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) },
+                  { scale: ticks[i].interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] }) },
+                  { rotate: i % 2 ? "1.5deg" : "-1.5deg" },
+                ],
               }}
             >
-              <Icon name="checkmark.circle.fill" size={22} color={colors.success} />
-              <Text variant="callout" numberOfLines={1} style={{ flex: 1 }}>
+              <Icon name="checkmark.circle.fill" size={24} color={colors.mint} />
+              <Text variant="headline" weight="700" numberOfLines={1} style={{ flex: 1 }}>
                 {line}
               </Text>
             </Animated.View>

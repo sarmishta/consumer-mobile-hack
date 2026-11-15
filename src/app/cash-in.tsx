@@ -1,11 +1,13 @@
 import { useMutation, useQuery } from "convex/react";
+import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import { Animated, Image, Pressable, View } from "react-native";
+import { useState } from "react";
+import { Image, Pressable, View } from "react-native";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { formatDay } from "../components/crew/format";
+import { AnimatedEmoji, PopIn, Sticker } from "../components/fun";
 import { Avatar, Button, Placeholder, Screen, Text } from "../components/ui";
 import { colors, radius, spacing } from "../lib/theme";
 
@@ -17,11 +19,6 @@ export default function CashIn() {
   const [photo, setPhoto] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const [saving, setSaving] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
-  const [pop] = useState(() => new Animated.Value(0));
-
-  useEffect(() => {
-    if (celebrating) Animated.spring(pop, { toValue: 1, friction: 4, useNativeDriver: true }).start();
-  }, [celebrating, pop]);
 
   const pickPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], quality: 0.7 });
@@ -44,6 +41,7 @@ export default function CashIn() {
         photoStorageId = (await response.json()).storageId;
       }
       await cashIn({ raincheckId: raincheck._id, photoStorageId });
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setCelebrating(true);
     } finally {
       setSaving(false);
@@ -52,12 +50,35 @@ export default function CashIn() {
 
   if (celebrating || raincheck?.cashedIn) {
     return (
-      <Screen edges={["left", "right", "bottom"]} style={{ justifyContent: "center", alignItems: "center", gap: spacing.lg }}>
-        <Animated.Text style={{ fontSize: 88, transform: [{ scale: celebrating ? pop : 1 }] }}>🎉</Animated.Text>
-        <Text variant="title1" align="center">
-          Raincheck cashed.
+      <Screen
+        edges={["left", "right", "bottom"]}
+        background={colors.accentSoft}
+        style={{ justifyContent: "center", alignItems: "center", gap: spacing.lg }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+          <PopIn tilt={-10}>
+            <AnimatedEmoji name="party" size={140} />
+          </PopIn>
+          <PopIn tilt={8} delay={200}>
+            <AnimatedEmoji name="partying" size={96} />
+          </PopIn>
+        </View>
+        <Text variant="display" align="center">
+          Raincheck cashed!
         </Text>
-        <Text variant="body" align="center" color={colors.secondaryLabel}>
+        {raincheck ? (
+          <Sticker
+            label={raincheck.plan + " ✓"}
+            color={colors.mint}
+            ink={colors.white}
+            emoji={/taco/i.test(raincheck.plan) ? "taco" : "sparkles"}
+            tilt={-4}
+            delay={350}
+            size="lg"
+            style={{ alignSelf: "center" }}
+          />
+        ) : null}
+        <Text variant="body" weight="600" align="center" color={colors.secondaryLabel}>
           {raincheck ? `${raincheck.name} made good on ${raincheck.plan}.` : ""} Bad days, good nights.
         </Text>
         <Button testID="cashin-done" label="Done" onPress={() => router.back()} style={{ alignSelf: "stretch" }} />
@@ -83,7 +104,7 @@ export default function CashIn() {
       edges={["left", "right"]}
       style={{ paddingTop: spacing.xxl }}
       footer={
-        <Button testID="cashin-submit" label="We did it" icon="party.popper.fill" loading={saving} onPress={submit} />
+        <Button testID="cashin-submit" label="We did it" icon="party.popper.fill" haptic loading={saving} onPress={submit} />
       }
     >
       <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
@@ -91,10 +112,8 @@ export default function CashIn() {
       </View>
       <View style={{ alignItems: "center", gap: spacing.md, marginTop: spacing.lg }}>
         <Avatar name={raincheck.name} emoji={raincheck.avatar} size={72} ringColor={colors.coral} ring />
-        <Text variant="footnote" color={colors.secondaryLabel} weight="600" style={{ textTransform: "uppercase" }}>
-          Raincheck · {formatDay(raincheck.day)}
-        </Text>
-        <Text variant="title1" align="center">
+        <Sticker label={"Raincheck · " + formatDay(raincheck.day)} color={colors.coral} ink={colors.white} tilt={-3} size="sm" style={{ alignSelf: "center" }} />
+        <Text variant="largeTitle" align="center" style={{ fontSize: 32, lineHeight: 38 }}>
           {raincheck.name} owes the crew {raincheck.plan}
         </Text>
         <Text variant="body" align="center" color={colors.secondaryLabel}>

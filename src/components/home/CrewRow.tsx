@@ -29,12 +29,12 @@ export function CrewRow({
           accessibilityLabel={`${m.name}, ${m.doneToday ? "checked in" : "not yet"}`}
           disabled={!m.doneToday}
           onPress={() => onSelect(selected === m.memberId ? null : m.memberId)}
-          style={({ pressed }) => ({ alignItems: "center", width: 64, opacity: pressed ? 0.7 : 1 })}
+          style={({ pressed }) => ({ alignItems: "center", width: 72, opacity: pressed ? 0.7 : 1, transform: [{ scale: pressed ? 0.94 : 1 }] })}
         >
           <Avatar
             name={m.name}
             emoji={m.avatar}
-            size={52}
+            size={56}
             ring={m.doneToday}
             ringColor={selected === m.memberId ? colors.rain : colors.accent}
           />
@@ -43,7 +43,7 @@ export function CrewRow({
               variant="caption"
               numberOfLines={1}
               color={m.doneToday ? colors.label : colors.tertiaryLabel}
-              weight={selected === m.memberId ? "600" : undefined}
+              weight={selected === m.memberId ? "800" : "700"}
             >
               {m.name.split(" ")[0]}
             </Text>

@@ -1,7 +1,8 @@
 import { BlurView } from "expo-blur";
+import * as Haptics from "expo-haptics";
 import { SymbolView } from "expo-symbols";
-import { Children, Fragment, isValidElement } from "react";
-import type { ComponentProps, ReactNode } from "react";
+import { Children, Fragment, isValidElement, useEffect, useRef } from "react";
+import type { ComponentProps, ComponentRef, ReactNode } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -16,9 +17,11 @@ import {
   View,
 } from "react-native";
 import type { StyleProp, TextInputProps, TextStyle, ViewStyle } from "react-native";
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { Edge } from "react-native-safe-area-context";
-import { colors, radius, spacing, type } from "../lib/theme";
+import { colors, fontForWeight, fonts, radius, spacing, type } from "../lib/theme";
+import { StoryRing } from "./fun";
 import type { TypeVariant } from "../lib/theme";
 
 /** An SF Symbol name, e.g. "checkmark.circle.fill". */
@@ -71,7 +74,12 @@ export function Text({
   return (
     <RNText
       numberOfLines={numberOfLines}
-      style={[type[variant], { color, textAlign: align }, weight ? { fontWeight: weight } : null, style]}
+      style={[
+        type[variant],
+        { color, textAlign: align },
+        weight && type[variant].fontFamily !== fonts.display ? { fontFamily: fontForWeight(weight) } : null,
+        style,
+      ]}
     >
       {children}
     </RNText>
@@ -98,6 +106,12 @@ export function Screen({
   style?: StyleProp<ViewStyle>;
 }) {
   const pad = padded ? { paddingHorizontal: spacing.lg } : null;
+  const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null);
+  useEffect(() => {
+    if (!scroll || !footer) return;
+    const sub = Keyboard.addListener("keyboardDidShow", () => scrollRef.current?.scrollToEnd({ animated: true }));
+    return () => sub.remove();
+  }, [scroll, footer]);
   return (
     <SafeAreaView edges={edges} style={{ flex: 1, backgroundColor: background }}>
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
@@ -105,6 +119,7 @@ export function Screen({
           {scroll ? (
             <ScrollView
               contentContainerStyle={[pad, { paddingBottom: 120 }, style]}
+              ref={scrollRef}
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="interactive"
               contentInsetAdjustmentBehavior="automatic"
@@ -139,13 +154,15 @@ export function LargeTitle({
     <View style={styles.largeTitle}>
       <View style={{ flex: 1 }}>
         {eyebrow ? (
-          <Text variant="footnote" color={colors.secondaryLabel} weight="600" style={{ textTransform: "uppercase" }}>
-            {eyebrow}
-          </Text>
+          <View style={styles.eyebrow}>
+            <Text variant="caption" color={colors.white} weight="800" style={{ textTransform: "uppercase", letterSpacing: 0.6 }}>
+              {eyebrow}
+            </Text>
+          </View>
         ) : null}
         <Text variant="largeTitle">{children}</Text>
         {subtitle ? (
-          <Text variant="subhead" color={colors.secondaryLabel} style={{ marginTop: spacing.xs }}>
+          <Text variant="subhead" color={colors.secondaryLabel} weight="600" style={{ marginTop: spacing.xxs }}>
             {subtitle}
           </Text>
         ) : null}
@@ -157,7 +174,24 @@ export function LargeTitle({
 
 type ButtonVariant = "primary" | "secondary" | "plain" | "destructive";
 
-/** Pill button. primary = amber fill, secondary = gray fill, plain = text only, destructive = red text. */
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+/** Springy scale on press, shared by buttons and chips. */
+function usePressScale(to = 0.94) {
+  const scale = useSharedValue(1);
+  const animated = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  return {
+    animated,
+    onPressIn: () => {
+      scale.set(withSpring(to, { damping: 15, stiffness: 400 }));
+    },
+    onPressOut: () => {
+      scale.set(withSpring(1, { damping: 8, stiffness: 300 }));
+    },
+  };
+}
+
+/** Chunky pill button with a springy press. primary = amber fill, secondary = soft fill, plain = text only, destructive = red text. haptic adds a tap. */
 export function Button({
   testID,
   label,
@@ -167,18 +201,21 @@ export function Button({
   disabled,
   loading,
   small,
+  haptic,
   style,
 }: {
   testID: string;
   label: string;
   onPress: () => void;
   variant?: ButtonVariant;
+  haptic?: boolean;
   icon?: SymbolName;
   disabled?: boolean;
   loading?: boolean;
   small?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
+  const press = usePressScale();
   const fg = {
     primary: colors.onAccent,
     secondary: colors.label,
@@ -186,20 +223,25 @@ export function Button({
     destructive: colors.danger,
   }[variant];
   return (
-    <Pressable
+    <AnimatedPressable
       testID={testID}
       accessibilityRole="button"
       accessibilityLabel={label}
       disabled={disabled || loading}
-      onPress={onPress}
-      style={({ pressed }) => [
+      onPressIn={press.onPressIn}
+      onPressOut={press.onPressOut}
+      onPress={() => {
+        if (haptic) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        onPress();
+      }}
+      style={[
         styles.button,
         small && styles.buttonSmall,
-        variant === "primary" && { backgroundColor: colors.accent },
-        variant === "secondary" && { backgroundColor: colors.fill },
+        variant === "primary" && styles.buttonPrimary,
+        variant === "secondary" && { backgroundColor: colors.surface, borderWidth: 2, borderColor: colors.fill },
         (disabled || loading) && { opacity: 0.4 },
-        pressed && { opacity: 0.7 },
         style,
+        press.animated,
       ]}
     >
       {loading ? (
@@ -207,12 +249,12 @@ export function Button({
       ) : (
         <View style={styles.buttonInner}>
           {icon ? <Icon name={icon} size={small ? 15 : 18} color={fg} weight="semibold" /> : null}
-          <Text variant={small ? "subhead" : "headline"} color={fg} weight="600">
+          <Text variant={small ? "subhead" : "headline"} color={fg} weight="700" style={small ? null : { fontSize: 18 }}>
             {label}
           </Text>
         </View>
       )}
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 
@@ -245,7 +287,7 @@ export function Section({
   return (
     <View style={[{ marginTop: spacing.xxl }, style]}>
       {title ? (
-        <Text variant="footnote" color={colors.secondaryLabel} style={styles.sectionTitle}>
+        <Text variant="footnote" color={colors.label} weight="800" style={styles.sectionTitle}>
           {title.toUpperCase()}
         </Text>
       ) : null}
@@ -309,7 +351,7 @@ export function Row({
           </View>
         ) : null)}
       <View style={{ flex: 1 }}>
-        <Text variant="body" numberOfLines={1}>
+        <Text variant="body" weight="600" numberOfLines={1}>
           {title}
         </Text>
         {subtitle ? (
@@ -329,7 +371,7 @@ export function Row({
   );
 }
 
-/** Round avatar: photo if photoUrl, else emoji, else initials. ring draws the amber "checked in today" story ring. */
+/** Round avatar: photo if photoUrl, else emoji, else initials. ring draws the pulsing gradient "checked in today" story ring; a custom ringColor draws a solid ring. */
 export function Avatar({
   name,
   photoUrl,
@@ -357,7 +399,7 @@ export function Avatar({
         width: size,
         height: size,
         borderRadius: size / 2,
-        backgroundColor: colors.fill,
+        backgroundColor: colors.accentSoft,
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
@@ -366,7 +408,7 @@ export function Avatar({
       {photoUrl ? (
         <Image source={{ uri: photoUrl }} style={{ width: size, height: size }} />
       ) : emoji ? (
-        <RNText style={{ fontSize: size * 0.5 }}>{emoji}</RNText>
+        <RNText style={{ fontSize: size * 0.5, lineHeight: size * 0.62 }}>{emoji}</RNText>
       ) : (
         <Text variant="headline" color={colors.secondaryLabel} style={{ fontSize: size * 0.38 }}>
           {initials || "?"}
@@ -374,18 +416,17 @@ export function Avatar({
       )}
     </View>
   );
-  const gap = Math.max(2, Math.round(size * 0.06));
+  const thickness = Math.max(2, Math.round(size * 0.06));
+  if (!ring) return <View style={{ padding: thickness * 2 }}>{inner}</View>;
   return (
-    <View
-      style={{
-        padding: gap,
-        borderRadius: size,
-        borderWidth: gap,
-        borderColor: ring ? ringColor : "transparent",
-      }}
+    <StoryRing
+      size={size}
+      thickness={thickness}
+      pulse={ringColor === colors.accent}
+      colorsOverride={ringColor === colors.accent ? undefined : [ringColor, ringColor]}
     >
       {inner}
-    </View>
+    </StoryRing>
   );
 }
 
@@ -407,34 +448,40 @@ export function Chip({
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
 }) {
+  const press = usePressScale(0.96);
   return (
-    <Pressable
+    <AnimatedPressable
       testID={testID}
       accessibilityRole="button"
       accessibilityState={{ selected: !!selected }}
       accessibilityLabel={label}
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.chip,
-        selected && { backgroundColor: colors.accentSoft, borderColor: colors.accent },
-        pressed && { opacity: 0.7 },
-        style,
-      ]}
+      onPressIn={press.onPressIn}
+      onPressOut={press.onPressOut}
+      onPress={() => {
+        Haptics.selectionAsync();
+        onPress();
+      }}
+      style={[styles.chip, selected && styles.chipSelected, style, press.animated]}
     >
-      {emoji ? <RNText style={{ fontSize: 22 }}>{emoji}</RNText> : null}
-      {icon ? <Icon name={icon} size={20} color={selected ? colors.accentInk : colors.secondaryLabel} /> : null}
-      <Text variant="headline" color={selected ? colors.accentInk : colors.label}>
+      {emoji ? (
+        <View style={[styles.chipEmoji, selected && { backgroundColor: colors.white }]}>
+          <RNText style={{ fontSize: 24, lineHeight: 30 }}>{emoji}</RNText>
+        </View>
+      ) : null}
+      {icon ? <Icon name={icon} size={20} color={selected ? colors.onAccent : colors.secondaryLabel} /> : null}
+      <Text variant="headline" weight="700" color={selected ? colors.onAccent : colors.label} style={{ flex: 1, fontSize: 18 }}>
         {label}
       </Text>
-    </Pressable>
+      {selected ? <Icon name="checkmark.circle.fill" size={24} color={colors.onAccent} /> : null}
+    </AnimatedPressable>
   );
 }
 
 /** Horizontal progress bar. value is 0..1. */
 export function ProgressBar({
   value,
-  color = colors.accent,
-  height = 6,
+  color = colors.coral,
+  height = 10,
   style,
 }: {
   value: number;
@@ -535,6 +582,15 @@ export function EmojiPicker({
 }
 
 const styles = StyleSheet.create({
+  eyebrow: {
+    alignSelf: "flex-start",
+    backgroundColor: colors.label,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xxs + 1,
+    marginBottom: spacing.xs,
+    transform: [{ rotate: "-2deg" }],
+  },
   largeTitle: {
     flexDirection: "row",
     alignItems: "flex-end",
@@ -543,15 +599,30 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   button: {
-    minHeight: 50,
+    minHeight: 56,
     borderRadius: radius.pill,
     paddingHorizontal: spacing.xxl,
     alignItems: "center",
     justifyContent: "center",
   },
-  buttonSmall: { minHeight: 36, paddingHorizontal: spacing.lg },
+  buttonSmall: { minHeight: 40, paddingHorizontal: spacing.lg },
+  buttonPrimary: {
+    backgroundColor: colors.accent,
+    borderBottomWidth: 4,
+    borderBottomColor: "#E09A00",
+    shadowColor: "#B86E00",
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 6 },
+  },
   buttonInner: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
-  card: { backgroundColor: colors.surface, borderRadius: radius.md, overflow: "hidden" },
+  card: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "#F3E6D3",
+  },
   sectionTitle: { marginLeft: spacing.lg, marginBottom: spacing.sm },
   sectionFooter: { marginHorizontal: spacing.lg, marginTop: spacing.sm },
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: colors.separator, marginLeft: spacing.lg },
@@ -569,12 +640,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.md,
-    minHeight: 56,
-    paddingHorizontal: spacing.lg,
-    borderRadius: radius.lg,
+    minHeight: 64,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.pill,
     borderWidth: 2,
-    borderColor: "transparent",
+    borderColor: "#F3E6D3",
     backgroundColor: colors.surface,
+  },
+  chipSelected: { backgroundColor: colors.accent, borderColor: colors.label },
+  chipEmoji: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.accentSoft,
+    alignItems: "center",
+    justifyContent: "center",
   },
   placeholder: { borderRadius: radius.lg, alignItems: "center", justifyContent: "center" },
   blurBar: {
@@ -593,6 +673,8 @@ const styles = StyleSheet.create({
     color: colors.label,
     backgroundColor: colors.surface,
     borderRadius: radius.md,
+    borderWidth: 2,
+    borderColor: "#F3E6D3",
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md + 2,
   },

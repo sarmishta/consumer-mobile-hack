@@ -1,10 +1,12 @@
 import { useMutation } from "convex/react";
+import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Image, Pressable, View } from "react-native";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
+import { AnimatedEmoji, PopIn, Sticker } from "../components/fun";
 import { Button, Icon, Input, Placeholder, Screen, Text } from "../components/ui";
 import { useCurrentMember } from "../lib/session";
 import { colors, radius, spacing } from "../lib/theme";
@@ -70,8 +72,9 @@ export default function CheckIn() {
         photoStorageId,
         note: note.trim() || undefined,
       });
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setDone(true);
-      setTimeout(() => router.back(), 1100);
+      setTimeout(() => router.back(), 1600);
     } catch (error) {
       setBusy(false);
       Alert.alert("Check-in didn't go through", error instanceof Error ? error.message : "Try again.");
@@ -80,11 +83,18 @@ export default function CheckIn() {
 
   if (done) {
     return (
-      <Screen edges={["left", "right", "bottom"]}>
+      <Screen edges={["left", "right", "bottom"]} background={colors.accentSoft}>
         <View testID="checkin-success" style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: spacing.md }}>
-          <Icon name="checkmark.circle.fill" size={72} color={colors.success} />
-          <Text variant="title1">Checked in</Text>
-          <Text color={colors.secondaryLabel}>Your crew can see it now.</Text>
+          <PopIn>
+            <AnimatedEmoji name="raisedHands" size={150} />
+          </PopIn>
+          <Text variant="display" align="center">
+            Checked in!
+          </Text>
+          <Sticker label="+1 day" emoji="fire" color={colors.accent} tilt={-6} delay={250} size="lg" style={{ alignSelf: "center" }} />
+          <Text variant="callout" weight="600" color={colors.secondaryLabel} style={{ marginTop: spacing.sm }}>
+            Your crew can see it now.
+          </Text>
         </View>
       </Screen>
     );
@@ -96,13 +106,14 @@ export default function CheckIn() {
       edges={["left", "right"]}
       style={{ paddingTop: spacing.xxl }}
       footer={
-        <Button testID="checkin-submit" label="Check in" icon="checkmark" loading={busy} disabled={!member} onPress={submit} />
+        <Button testID="checkin-submit" label="Check in" icon="checkmark" haptic loading={busy} disabled={!member} onPress={submit} />
       }
     >
       <View style={{ flexDirection: "row", alignItems: "center", marginBottom: spacing.xl }}>
-        <Text variant="title1" style={{ flex: 1 }}>
-          Check in
-        </Text>
+        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: spacing.xs }}>
+          <Text variant="largeTitle">Check in</Text>
+          <AnimatedEmoji name="muscle" size={40} />
+        </View>
         <Button testID="checkin-close" label="Cancel" variant="plain" small onPress={() => router.back()} />
       </View>
 
@@ -132,7 +143,7 @@ export default function CheckIn() {
           </Pressable>
         </View>
       ) : (
-        <Placeholder height={200} icon="camera" label="Photo optional" />
+        <Placeholder height={220} icon="camera.fill" label="Snap it. Photo optional." tint="amber" />
       )}
 
       <View style={{ flexDirection: "row", gap: spacing.md, marginTop: spacing.md }}>
@@ -156,7 +167,7 @@ export default function CheckIn() {
         />
       </View>
 
-      <Text variant="footnote" color={colors.secondaryLabel} weight="600" style={{ marginTop: spacing.xxl, marginBottom: spacing.sm }}>
+      <Text variant="footnote" color={colors.label} weight="800" style={{ marginTop: spacing.xxl, marginBottom: spacing.sm }}>
         NOTE
       </Text>
       <Input

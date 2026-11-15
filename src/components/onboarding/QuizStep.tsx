@@ -31,15 +31,18 @@ export function QuizStep({
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.md, paddingVertical: spacing.md }}>
         <Pressable testID="quiz-back" accessibilityRole="button" accessibilityLabel="Back" hitSlop={12} onPress={() => router.back()}>
-          <Icon name="chevron.left" size={20} color={colors.secondaryLabel} weight="semibold" />
+          <Icon name="chevron.left" size={22} color={colors.label} weight="bold" />
         </Pressable>
         <ProgressBar value={step / QUIZ_STEPS} style={{ flex: 1 }} />
+        <Text variant="sticker" color={colors.coral} style={{ fontSize: 16 }}>
+          {step}/{QUIZ_STEPS}
+        </Text>
       </View>
-      <Text variant="title1" style={{ marginTop: spacing.xl }}>
+      <Text variant="largeTitle" style={{ marginTop: spacing.xl, fontSize: 34, lineHeight: 40 }}>
         {title}
       </Text>
       {subtitle ? (
-        <Text variant="callout" color={colors.secondaryLabel} style={{ marginTop: spacing.sm }}>
+        <Text variant="callout" weight="600" color={colors.secondaryLabel} style={{ marginTop: spacing.sm }}>
           {subtitle}
         </Text>
       ) : null}
