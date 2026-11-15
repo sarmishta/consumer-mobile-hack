@@ -7,8 +7,8 @@ import { CrewRow } from "../../components/home/CrewRow";
 import { dayNumber, prettyDay } from "../../components/home/dates";
 import { FeedItem } from "../../components/home/FeedItem";
 import { GoalCard } from "../../components/home/GoalCard";
-import { AnimatedEmoji, Sticker } from "../../components/fun";
-import { Button, LargeTitle, Screen, Text } from "../../components/ui";
+import { Sticker } from "../../components/fun";
+import { Button, Icon, LargeTitle, Screen, Text } from "../../components/ui";
 import { useCurrentMember } from "../../lib/session";
 import { colors, spacing } from "../../lib/theme";
 
@@ -75,7 +75,7 @@ export default function Home() {
             gap: spacing.sm,
           }}
         >
-          <AnimatedEmoji name="wave" size={84} />
+          <Icon name="figure.walk" size={56} color={colors.accentInk} weight="bold" />
           <Text variant="title3" align="center">
             First check-in? Shoes on counts.
           </Text>

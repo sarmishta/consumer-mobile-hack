@@ -4,7 +4,7 @@ import { Image, View } from "react-native";
 import type { api } from "../../../convex/_generated/api";
 import { colors, gradients, radius, spacing } from "../../lib/theme";
 import { AnimatedEmoji, PopIn, Sticker } from "../fun";
-import { Avatar, Text } from "../ui";
+import { Avatar, Icon, Text } from "../ui";
 import { weekdayLetter } from "./format";
 
 type Week = NonNullable<FunctionReturnType<typeof api.reel.week>>;
@@ -40,7 +40,6 @@ export function buildSlides(week: Week): Slide[] {
       content: (
         <View style={{ gap: spacing.xxl, alignItems: "center" }}>
           <Eyebrow>{week.groupName + " · this week"}</Eyebrow>
-          <AnimatedEmoji name="fire" size={96} />
           <Big value={week.checkins} label={week.checkins === 1 ? "check-in" : "check-ins"} delay={100} />
           <Big value={week.bestStreak} label="best streak" delay={250} />
         </View>
@@ -77,7 +76,7 @@ export function buildSlides(week: Week): Slide[] {
                     justifyContent: "center",
                   }}
                 >
-                  {person.done[i] ? <Text style={{ fontSize: 16, lineHeight: 20 }}>🔥</Text> : null}
+                  {person.done[i] ? <Icon name="checkmark" size={16} color={PERSON_GRADIENTS[index % PERSON_GRADIENTS.length][1]} weight="heavy" /> : null}
                 </View>
                 <Text variant="caption" weight="800" color={WHITE_SOFT}>
                   {weekdayLetter(day)}
@@ -97,7 +96,6 @@ export function buildSlides(week: Week): Slide[] {
     content: (
       <View style={{ gap: spacing.xl, alignItems: "center", alignSelf: "stretch" }}>
         <Eyebrow>Rainchecks</Eyebrow>
-        <AnimatedEmoji name="umbrella" size={88} />
         <View style={{ flexDirection: "row", gap: spacing.huge }}>
           <Big value={week.owed.length} label="owed" />
           <Big value={week.cashedIn.length} label="cashed in" delay={150} />
@@ -107,7 +105,7 @@ export function buildSlides(week: Week): Slide[] {
             raincheck.photoUrl ? (
               <Image key={raincheck._id} source={{ uri: raincheck.photoUrl }} style={{ width: 130, height: 130, borderRadius: radius.lg, borderWidth: 4, borderColor: colors.white }} />
             ) : (
-              <Sticker key={raincheck._id} label={raincheck.plan + " ✓"} color={colors.white} tilt={i % 2 ? 5 : -5} delay={300 + i * 120} emoji="party" />
+              <Sticker key={raincheck._id} label={raincheck.plan + " ✓"} color={colors.white} tilt={i % 2 ? 5 : -5} delay={300 + i * 120} />
             ),
           )}
         </View>

@@ -2,8 +2,8 @@ import { router } from "expo-router";
 import { View } from "react-native";
 import type { Id } from "../../../convex/_generated/dataModel";
 import { colors, gradients, spacing } from "../../lib/theme";
-import { AnimatedEmoji, GradientCard, Sticker } from "../fun";
-import { Avatar, Button, Text } from "../ui";
+import { GradientCard, Sticker } from "../fun";
+import { Avatar, Button, Icon, Text } from "../ui";
 import { formatDay } from "./format";
 
 export function RaincheckCard({
@@ -23,9 +23,9 @@ export function RaincheckCard({
             Rain on {formatDay(raincheck.day)}
           </Text>
         </View>
-        <AnimatedEmoji name="umbrella" size={52} />
+        <Icon name="umbrella.fill" size={30} color={colors.white} />
       </View>
-      <Sticker label={raincheck.plan} color={colors.accent} tilt={-4} emoji={/taco/i.test(raincheck.plan) ? "taco" : undefined} />
+      <Sticker label={raincheck.plan} color={colors.accent} tilt={-4} />
       <Button
         testID={"cash-in-button-" + raincheck._id}
         label="Cash it in"

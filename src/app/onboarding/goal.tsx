@@ -20,7 +20,6 @@ export default function GoalQuestion() {
           key={type}
           testID={`quiz-goal-${testIdSlug(type)}`}
           label={GOAL_DEFAULTS[type].label}
-          emoji={GOAL_DEFAULTS[type].emoji}
           selected={goalType === type}
           onPress={() => set({ goalType: type, goal: GOAL_DEFAULTS[type].goal, emoji: GOAL_DEFAULTS[type].emoji })}
         />

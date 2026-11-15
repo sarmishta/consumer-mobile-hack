@@ -3,7 +3,7 @@ import * as Linking from "expo-linking";
 import { router } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Pressable, Share, View } from "react-native";
-import { AnimatedEmoji, GradientCard, Sticker } from "../../components/fun";
+import { GradientCard, Sticker } from "../../components/fun";
 import { Button, Icon, Screen, Text } from "../../components/ui";
 import type { SymbolName } from "../../components/ui";
 import { useCurrentMember } from "../../lib/session";
@@ -76,12 +76,9 @@ export default function Invite() {
         </View>
       }
     >
-      <View style={{ flexDirection: "row", alignItems: "center", marginTop: spacing.xxl, gap: spacing.sm }}>
-        <Text variant="largeTitle" style={{ flex: 1 }}>
-          Your crew is ready.
-        </Text>
-        <AnimatedEmoji name="partying" size={64} />
-      </View>
+      <Text variant="largeTitle" style={{ marginTop: spacing.xxl }}>
+        Your crew is ready.
+      </Text>
       <Text variant="callout" weight="600" color={colors.secondaryLabel} style={{ marginTop: spacing.sm }}>
         Invite up to 5 people. It’s more fun when someone else might owe tacos.
       </Text>

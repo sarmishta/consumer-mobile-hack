@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Animated, View } from "react-native";
 import { api } from "../../../convex/_generated/api";
 import { HANGOUTS, KINDS, NUDGE_TIMES } from "../../components/onboarding/options";
-import { AnimatedEmoji } from "../../components/fun";
+import { FallingRaindrop } from "../../components/onboarding/Raindrop";
 import { useOnboarding } from "../../components/onboarding/store";
 import { Button, Icon, Screen, Text } from "../../components/ui";
 import { useSession } from "../../lib/session";
@@ -51,7 +51,7 @@ export default function MakingYourCrew() {
         kind,
         today: localToday(),
         hangout: answers.hangout.trim() || undefined,
-        name: `${label.length > 26 ? label.slice(0, 26).trim() : label} crew`,
+        name: "My crew",
       });
       const mine = await convex.query(api.groups.mine, { userId });
       if (!mine) throw new Error("Member row missing after group create");
@@ -73,7 +73,7 @@ export default function MakingYourCrew() {
   return (
     <Screen background={colors.rainSoft}>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: spacing.xxl }}>
-        <AnimatedEmoji name={error ? "umbrella" : "rain"} size={150} />
+        <FallingRaindrop />
         <Text variant="largeTitle" align="center">
           {error ? "Hit a puddle." : "Making your crew…"}
         </Text>

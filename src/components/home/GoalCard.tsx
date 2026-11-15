@@ -55,7 +55,7 @@ export function GoalCard({
         {mine ? (
           <View style={{ gap: spacing.md }}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.sm, flexWrap: "wrap" }}>
-              <Sticker label="Checked in today" color={colors.mint} ink={colors.white} emoji="muscle" tilt={-3} />
+              <Sticker label="Checked in today" color={colors.mint} ink={colors.white} tilt={-3} />
               <Sticker label="+1 day" color={colors.accent} tilt={5} delay={200} size="sm" />
             </View>
             {mine.photoUrl ? (

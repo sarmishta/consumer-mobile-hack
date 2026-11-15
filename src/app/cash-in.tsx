@@ -59,9 +59,6 @@ export default function CashIn() {
           <PopIn tilt={-10}>
             <AnimatedEmoji name="party" size={140} />
           </PopIn>
-          <PopIn tilt={8} delay={200}>
-            <AnimatedEmoji name="partying" size={96} />
-          </PopIn>
         </View>
         <Text variant="display" align="center">
           Raincheck cashed!
@@ -71,7 +68,6 @@ export default function CashIn() {
             label={raincheck.plan + " ✓"}
             color={colors.mint}
             ink={colors.white}
-            emoji={/taco/i.test(raincheck.plan) ? "taco" : "sparkles"}
             tilt={-4}
             delay={350}
             size="lg"

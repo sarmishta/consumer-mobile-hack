@@ -16,17 +16,9 @@ export default function Splash() {
       }
     >
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingBottom: 120 }}>
-        <View style={{ flexDirection: "row", alignItems: "flex-end", marginBottom: spacing.xl }}>
-          <PopIn tilt={-12} delay={300}>
-            <AnimatedEmoji name="droplet" size={56} />
-          </PopIn>
-          <PopIn>
-            <AnimatedEmoji name="rain" size={140} />
-          </PopIn>
-          <PopIn tilt={12} delay={450}>
-            <AnimatedEmoji name="moon" size={56} />
-          </PopIn>
-        </View>
+        <PopIn style={{ marginBottom: spacing.xl }}>
+          <AnimatedEmoji name="rain" size={150} />
+        </PopIn>
         <Text variant="display" align="center" style={{ fontSize: 60, lineHeight: 66 }}>
           RAINCHECK
         </Text>

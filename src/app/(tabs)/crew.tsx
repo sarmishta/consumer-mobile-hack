@@ -2,14 +2,14 @@ import { useMutation, useQuery } from "convex/react";
 import { router } from "expo-router";
 import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { Pressable, Share, View } from "react-native";
+import { Alert, Pressable, Share, View } from "react-native";
 import { api } from "../../../convex/_generated/api";
 import { EndDayConfirm } from "../../components/crew/EndDayConfirm";
 import { RaincheckCard } from "../../components/crew/RaincheckCard";
 import { RaincheckMoment } from "../../components/crew/RaincheckMoment";
 import { Sheet } from "../../components/crew/Sheet";
 import { formatDay } from "../../components/crew/format";
-import { AnimatedEmoji, Sticker } from "../../components/fun";
+import { Sticker } from "../../components/fun";
 import { Avatar, Button, Icon, LargeTitle, Row, Screen, Section, Text } from "../../components/ui";
 import { useCurrentMember } from "../../lib/session";
 import { colors, gradients, radius, spacing } from "../../lib/theme";
@@ -21,6 +21,7 @@ export default function Crew() {
   const open = useQuery(api.rainchecks.listOpen, groupArgs);
   const cashed = useQuery(api.crew.cashedIn, groupArgs);
   const endDay = useMutation(api.rainchecks.endDay);
+  const renameCrew = useMutation(api.crewName.rename);
   const [endedDay, setEndedDay] = useState<string | null>(null);
   const [ending, setEnding] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -49,7 +50,7 @@ export default function Crew() {
 
   return (
     <Screen scroll>
-      <LargeTitle eyebrow={formatDay(group.currentDay)} subtitle="Bad days, good nights." right={<AnimatedEmoji name="rain" size={56} />}>
+      <LargeTitle eyebrow={formatDay(group.currentDay)} subtitle="Bad days, good nights.">
         {group.name}
       </LargeTitle>
 
@@ -72,7 +73,7 @@ export default function Crew() {
                   paddingVertical: spacing.xxs,
                 }}
               >
-                <Text style={{ fontSize: 15, lineHeight: 20, opacity: person.streak > 0 ? 1 : 0.4 }}>🔥</Text>
+                <Icon name="flame.fill" size={14} color={person.streak > 0 ? colors.accentInk : colors.tertiaryLabel} />
                 <Text variant="headline" weight="800" color={person.streak > 0 ? colors.accentInk : colors.tertiaryLabel}>
                   {person.streak}
                 </Text>
@@ -80,6 +81,24 @@ export default function Crew() {
             }
           />
         ))}
+        <Row
+          testID="rename-crew"
+          title="Rename crew"
+          value={group.name}
+          icon="pencil"
+          iconColor={colors.grape}
+          onPress={() =>
+            Alert.prompt(
+              "Rename crew",
+              undefined,
+              (name) => {
+                if (name?.trim()) renameCrew({ groupId: group._id, name });
+              },
+              "plain-text",
+              group.name,
+            )
+          }
+        />
         <Row
           testID="invite-share"
           title="Invite code"
@@ -110,7 +129,7 @@ export default function Crew() {
             gap: spacing.xs,
           }}
         >
-          <AnimatedEmoji name="sparkles" size={56} />
+          <Icon name="sun.max.fill" size={40} color={colors.rain} />
           <Text variant="headline" weight="800" color={colors.rain}>
             No rainchecks. Clear skies.
           </Text>
@@ -168,7 +187,7 @@ export default function Crew() {
               title={`${raincheck.name} · ${raincheck.plan}`}
               subtitle={`Owed from ${formatDay(raincheck.day)}`}
               left={<Avatar name={raincheck.name} photoUrl={raincheck.photoUrl} emoji={raincheck.avatar} size={40} />}
-              right={<Text style={{ fontSize: 22, lineHeight: 28 }}>🎉</Text>}
+              right={<Icon name="checkmark.seal.fill" size={22} color={colors.mint} />}
             />
           ))}
         </Section>

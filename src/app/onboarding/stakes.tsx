@@ -25,7 +25,6 @@ export default function StakesQuestion() {
           key={h.id}
           testID={`quiz-hangout-${h.id}`}
           label={h.label}
-          emoji={h.emoji}
           selected={picked === h.id}
           onPress={() => {
             setPicked(h.id);

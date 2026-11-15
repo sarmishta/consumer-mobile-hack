@@ -10,6 +10,7 @@
 
 import type * as checkins from "../checkins.js";
 import type * as crew from "../crew.js";
+import type * as crewName from "../crewName.js";
 import type * as feed from "../feed.js";
 import type * as files from "../files.js";
 import type * as groups from "../groups.js";
@@ -30,6 +31,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   checkins: typeof checkins;
   crew: typeof crew;
+  crewName: typeof crewName;
   feed: typeof feed;
   files: typeof files;
   groups: typeof groups;

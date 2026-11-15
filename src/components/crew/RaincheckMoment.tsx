@@ -34,7 +34,6 @@ export function RaincheckMoment({ data, onClose }: { data: RaincheckMomentData; 
             label={"You owe " + data.mine.plan}
             color={colors.coral}
             ink={colors.white}
-            emoji={/taco/i.test(data.mine.plan) ? "taco" : undefined}
             tilt={-4}
             delay={250}
             style={{ alignSelf: "center" }}
@@ -53,7 +52,6 @@ export function RaincheckMoment({ data, onClose }: { data: RaincheckMomentData; 
               label={other.name + " owes " + other.plan}
               color={i % 2 ? colors.accent : colors.coral}
               ink={i % 2 ? colors.label : colors.white}
-              emoji={/taco/i.test(other.plan) ? "taco" : undefined}
               tilt={i % 2 ? 4 : -4}
               delay={350 + i * 150}
               style={{ alignSelf: "center" }}

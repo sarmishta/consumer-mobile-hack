@@ -2,7 +2,7 @@ import { Image, View } from "react-native";
 import type { FunctionReturnType } from "convex/server";
 import type { api } from "../../../convex/_generated/api";
 import { colors, gradients, radius, spacing } from "../../lib/theme";
-import { GradientCard, Sticker } from "../fun";
+import { GradientCard } from "../fun";
 import { Avatar, Card, Icon, Text } from "../ui";
 import { clockTime } from "./dates";
 
@@ -22,7 +22,7 @@ export function FeedItem({ item }: { item: FeedEntry }) {
               {item.name}
             </Text>
             <Text variant="footnote" color={colors.secondaryLabel} numberOfLines={1}>
-              {[item.emoji, item.goal ?? "No goal yet"].filter(Boolean).join(" ")}
+              {item.goal ?? "No goal yet"}
             </Text>
           </View>
           <View style={{ alignItems: "flex-end", gap: spacing.xs }}>
@@ -55,10 +55,12 @@ export function FeedItem({ item }: { item: FeedEntry }) {
         ) : (
           <GradientCard
             colors={block}
-            style={{ borderRadius: 0, height: 140, alignItems: "center", justifyContent: "center", padding: spacing.md }}
+            style={{ borderRadius: 0, height: 120, alignItems: "center", justifyContent: "center", gap: spacing.xs, padding: spacing.md }}
           >
-            <Text style={{ fontSize: 56, lineHeight: 68 }}>{item.emoji ?? "✅"}</Text>
-            <Sticker label="showed up" color={colors.white} tilt={-5} size="sm" style={{ alignSelf: "center", marginTop: spacing.xs }} />
+            <Icon name={item.source === "text" ? "message.fill" : "checkmark.circle.fill"} size={40} color={colors.white} weight="bold" />
+            <Text variant="sticker" color={colors.white}>
+              Showed up
+            </Text>
           </GradientCard>
         )}
         {item.note ? (

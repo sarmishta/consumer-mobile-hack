@@ -20,15 +20,8 @@ const EMOJI = {
   fire: require("../../assets/emoji/fire.json"),
   umbrella: require("../../assets/emoji/umbrella.json"),
   party: require("../../assets/emoji/party.json"),
-  partying: require("../../assets/emoji/partying.json"),
-  taco: require("../../assets/emoji/taco.json"),
-  wave: require("../../assets/emoji/wave.json"),
-  muscle: require("../../assets/emoji/muscle.json"),
   moon: require("../../assets/emoji/moon.json"),
-  droplet: require("../../assets/emoji/droplet.json"),
   rain: require("../../assets/emoji/rain.json"),
-  sparkles: require("../../assets/emoji/sparkles.json"),
-  raisedHands: require("../../assets/emoji/raised-hands.json"),
 };
 
 export type EmojiName = keyof typeof EMOJI;
@@ -78,7 +71,6 @@ export function Sticker({
   ink = colors.label,
   tilt = -4,
   delay = 0,
-  emoji,
   size = "md",
   style,
 }: {
@@ -87,7 +79,6 @@ export function Sticker({
   ink?: string;
   tilt?: number;
   delay?: number;
-  emoji?: EmojiName;
   size?: "sm" | "md" | "lg";
   style?: StyleProp<ViewStyle>;
 }) {
@@ -111,7 +102,6 @@ export function Sticker({
           shadowOffset: { width: 0, height: 4 },
         }}
       >
-        {emoji ? <AnimatedEmoji name={emoji} size={fontSize + 8} /> : null}
         <Text style={[type.sticker, { color: ink, fontSize, lineHeight: fontSize + 5 }]}>
           {label}
         </Text>

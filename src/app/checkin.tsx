@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Alert, Image, Pressable, View } from "react-native";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
-import { AnimatedEmoji, PopIn, Sticker } from "../components/fun";
+import { PopIn, Sticker } from "../components/fun";
 import { Button, Icon, Input, Placeholder, Screen, Text } from "../components/ui";
 import { useCurrentMember } from "../lib/session";
 import { colors, radius, spacing } from "../lib/theme";
@@ -32,7 +32,7 @@ export default function CheckIn() {
       if (!permission.granted) {
         Alert.alert(
           fromCamera ? "Camera is off" : "Photos are off",
-          "You can turn it on in Settings, or just check in without a photo.",
+          "Turn it on in Settings. A photo is your proof.",
         );
         return;
       }
@@ -45,27 +45,24 @@ export default function CheckIn() {
     } catch {
       Alert.alert(
         fromCamera ? "No camera here" : "Couldn't open photos",
-        fromCamera ? "Choose a photo instead, or check in without one." : "Check in without a photo for now.",
+        fromCamera ? "Choose a photo from your library instead." : "Try again, or snap one with the camera.",
       );
     }
   }
 
   async function submit() {
-    if (!member) return;
+    if (!member || !photo) return;
     setBusy(true);
     try {
-      let photoStorageId: Id<"_storage"> | undefined;
-      if (photo) {
-        const uploadUrl = await generateUploadUrl({});
-        const blob = await (await fetch(photo.uri)).blob();
-        const response = await fetch(uploadUrl, {
-          method: "POST",
-          headers: { "Content-Type": photo.mimeType },
-          body: blob,
-        });
-        if (!response.ok) throw new Error(`Upload failed (${response.status})`);
-        photoStorageId = ((await response.json()) as { storageId: Id<"_storage"> }).storageId;
-      }
+      const uploadUrl = await generateUploadUrl({});
+      const blob = await (await fetch(photo.uri)).blob();
+      const response = await fetch(uploadUrl, {
+        method: "POST",
+        headers: { "Content-Type": photo.mimeType },
+        body: blob,
+      });
+      if (!response.ok) throw new Error(`Upload failed (${response.status})`);
+      const photoStorageId = ((await response.json()) as { storageId: Id<"_storage"> }).storageId;
       await checkIn({
         memberId: member._id,
         source: "app",
@@ -86,12 +83,12 @@ export default function CheckIn() {
       <Screen edges={["left", "right", "bottom"]} background={colors.accentSoft}>
         <View testID="checkin-success" style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: spacing.md }}>
           <PopIn>
-            <AnimatedEmoji name="raisedHands" size={150} />
+            <Icon name="checkmark.circle.fill" size={120} color={colors.mint} weight="bold" />
           </PopIn>
           <Text variant="display" align="center">
             Checked in!
           </Text>
-          <Sticker label="+1 day" emoji="fire" color={colors.accent} tilt={-6} delay={250} size="lg" style={{ alignSelf: "center" }} />
+          <Sticker label="+1 day" color={colors.accent} tilt={-6} delay={250} size="lg" style={{ alignSelf: "center" }} />
           <Text variant="callout" weight="600" color={colors.secondaryLabel} style={{ marginTop: spacing.sm }}>
             Your crew can see it now.
           </Text>
@@ -106,14 +103,21 @@ export default function CheckIn() {
       edges={["left", "right"]}
       style={{ paddingTop: spacing.xxl }}
       footer={
-        <Button testID="checkin-submit" label="Check in" icon="checkmark" haptic loading={busy} disabled={!member} onPress={submit} />
+        <Button
+          testID="checkin-submit"
+          label={photo ? "Check in" : "Add a photo to check in"}
+          icon={photo ? "checkmark" : "camera.fill"}
+          haptic
+          loading={busy}
+          disabled={!member || !photo}
+          onPress={submit}
+        />
       }
     >
       <View style={{ flexDirection: "row", alignItems: "center", marginBottom: spacing.xl }}>
-        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: spacing.xs }}>
-          <Text variant="largeTitle">Check in</Text>
-          <AnimatedEmoji name="muscle" size={40} />
-        </View>
+        <Text variant="largeTitle" style={{ flex: 1 }}>
+          Check in
+        </Text>
         <Button testID="checkin-close" label="Cancel" variant="plain" small onPress={() => router.back()} />
       </View>
 
@@ -143,7 +147,7 @@ export default function CheckIn() {
           </Pressable>
         </View>
       ) : (
-        <Placeholder height={220} icon="camera.fill" label="Snap it. Photo optional." tint="amber" />
+        <Placeholder height={220} icon="camera.fill" label="Snap proof. A photo is required." tint="amber" />
       )}
 
       <View style={{ flexDirection: "row", gap: spacing.md, marginTop: spacing.md }}>
