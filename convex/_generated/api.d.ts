@@ -15,6 +15,7 @@ import type * as groups from "../groups.js";
 import type * as http from "../http.js";
 import type * as keiki from "../keiki.js";
 import type * as members from "../members.js";
+import type * as profile from "../profile.js";
 import type * as rainchecks from "../rainchecks.js";
 import type * as users from "../users.js";
 
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   keiki: typeof keiki;
   members: typeof members;
+  profile: typeof profile;
   rainchecks: typeof rainchecks;
   users: typeof users;
 }>;
