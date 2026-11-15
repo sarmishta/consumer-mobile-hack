@@ -32,7 +32,7 @@ export default function Invite() {
     );
   }
 
-  const { group, member } = current;
+  const { group } = current;
   const code = group.inviteCode;
   const link = Linking.createURL("onboarding/join", { queryParams: { code } });
   const owe = group.hangout ?? "tacos";
