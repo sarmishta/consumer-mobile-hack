@@ -14,6 +14,7 @@ import type { StakeKind } from "../../components/onboarding/options";
 import { Flame } from "../../components/characters";
 import { Sticker } from "../../components/fun";
 import { Avatar, Button, Icon, LargeTitle, Row, Screen, Section, Text } from "../../components/ui";
+import { CrewName, CrewSwitcherSheet } from "../../components/crews/CrewSwitcher";
 import { useCurrentMember } from "../../lib/session";
 import { colors, gradients, radius, spacing } from "../../lib/theme";
 
@@ -57,8 +58,9 @@ export default function Crew() {
   return (
     <Screen scroll>
       <LargeTitle eyebrow={formatDay(group.currentDay)} subtitle="Bad days, good nights.">
-        {group.name}
+        <CrewName name={group.name} />
       </LargeTitle>
+      <CrewSwitcherSheet />
 
       <Section title="Crew">
         {(board?.members ?? []).map((person) => (

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
+import { CrewName, CrewSwitcherSheet } from "../../components/crews/CrewSwitcher";
 import { CrewRow } from "../../components/home/CrewRow";
 import { dayNumber, prettyDay } from "../../components/home/dates";
 import { FeedItem } from "../../components/home/FeedItem";
@@ -46,8 +47,9 @@ export default function Home() {
           />
         }
       >
-        {board.group.name}
+        <CrewName name={board.group.name} />
       </LargeTitle>
+      <CrewSwitcherSheet />
 
       <View style={{ marginTop: spacing.sm, marginBottom: spacing.xl }}>
         <CrewRow members={board.members} selected={selected} onSelect={setSelected} />

@@ -2,7 +2,7 @@ import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
-import { normalizePhone, replyFor, secretsMatch } from "./keiki";
+import { normalizePhone, PHOTO_REQUIRED_REPLY, replyForCrews, secretsMatch } from "./keiki";
 
 declare const process: { env: Record<string, string | undefined> };
 
@@ -40,30 +40,32 @@ http.route({
     const found = await ctx.runQuery(internal.keiki.memberByPhone, { phone: e164 });
     if (found.status !== "ok") return json(404, { ok: false, error: found.status });
 
-    let photoStorageId: Id<"_storage"> | undefined;
-    if (typeof mediaUrl === "string" && mediaUrl) {
-      try {
-        const res = await fetch(mediaUrl);
-        if (res.ok) photoStorageId = await ctx.storage.store(await res.blob());
-      } catch {
-        photoStorageId = undefined;
-      }
+    const photoRequired = () =>
+      json(200, { ok: false, error: "photo_required", replyText: PHOTO_REQUIRED_REPLY });
+    if (typeof mediaUrl !== "string" || !mediaUrl.trim()) return photoRequired();
+    let photoStorageId: Id<"_storage">;
+    try {
+      const res = await fetch(mediaUrl);
+      if (!res.ok) return photoRequired();
+      photoStorageId = await ctx.storage.store(await res.blob());
+    } catch {
+      return photoRequired();
     }
 
-    const result = await ctx.runMutation(internal.checkins.record, {
-      memberId: found.memberId,
-      source: "text",
+    const { name, results } = await ctx.runMutation(internal.keiki.recordTextCheckins, {
+      userId: found.userId,
       note: typeof text === "string" ? text.trim() || undefined : undefined,
       photoStorageId,
     });
-    const summary = await ctx.runQuery(internal.keiki.checkinSummary, { memberId: found.memberId });
+    if (results.length === 0) return json(404, { ok: false, error: "no_group" });
     return json(200, {
       ok: true,
-      alreadyCheckedIn: result.alreadyCheckedIn,
-      day: result.day,
-      name: summary?.name ?? null,
-      goal: summary?.goal ?? null,
-      replyText: replyFor(result.alreadyCheckedIn, summary?.streak ?? 0),
+      alreadyCheckedIn: results.every((r) => r.alreadyCheckedIn),
+      results: results.map((r) => ({ group: r.group, alreadyCheckedIn: r.alreadyCheckedIn, day: r.day, streak: r.streak })),
+      day: results[0].day,
+      name,
+      goal: results[0].goal,
+      replyText: replyForCrews(results.map((r) => ({ groupName: r.group.name, alreadyCheckedIn: r.alreadyCheckedIn, streak: r.streak }))),
     });
   }),
 });
