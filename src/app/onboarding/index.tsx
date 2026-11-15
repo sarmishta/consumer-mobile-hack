@@ -1,13 +1,14 @@
 import { router } from "expo-router";
 import { View } from "react-native";
-import { Raindrop } from "../../components/onboarding/Raindrop";
+import { Drizzle, Luna } from "../../components/characters";
+import { Sticker } from "../../components/fun";
 import { Button, Screen, Text } from "../../components/ui";
 import { colors, spacing } from "../../lib/theme";
 
 export default function Splash() {
   return (
     <Screen
-      background={colors.surface}
+      background={colors.accentSoft}
       footer={
         <View style={{ gap: spacing.sm }}>
           <Button testID="splash-start" label="Get started" onPress={() => router.push("/onboarding/goal")} />
@@ -16,19 +17,18 @@ export default function Splash() {
       }
     >
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingBottom: 120 }}>
-        <View style={{ flexDirection: "row", alignItems: "flex-end", gap: spacing.md, marginBottom: spacing.xxxl }}>
-          <Raindrop size={28} color={colors.rainSoft} />
-          <Raindrop size={64} />
-          <Raindrop size={20} color={colors.accent} />
+        <Drizzle size={230} mood="wave" style={{ marginBottom: -spacing.lg }} />
+        <Text variant="display" align="center" style={{ fontSize: 60, lineHeight: 66 }}>
+          RAINCHECK
+        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.xs, marginTop: spacing.sm }}>
+          <Sticker label="Bad days, good nights." color={colors.coral} ink={colors.white} tilt={-4} delay={200} />
+          <View style={{ backgroundColor: colors.label, borderRadius: 28, padding: 4 }}>
+            <Luna size={48} mood="happy" />
+          </View>
         </View>
-        <Text variant="largeTitle" align="center">
-          Raincheck
-        </Text>
-        <Text variant="title3" color={colors.secondaryLabel} align="center" style={{ marginTop: spacing.sm }}>
-          Bad days, good nights.
-        </Text>
-        <Text variant="callout" color={colors.tertiaryLabel} align="center" style={{ marginTop: spacing.xl, maxWidth: 280 }}>
-          A daily goal with your people. Miss a day and you owe them a hangout.
+        <Text variant="callout" weight="600" color={colors.secondaryLabel} align="center" style={{ marginTop: spacing.xl, maxWidth: 280 }}>
+          Everyone picks a daily goal. Miss a day and you owe your crew.
         </Text>
       </View>
     </Screen>

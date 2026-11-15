@@ -3,10 +3,11 @@ import * as Linking from "expo-linking";
 import { router } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Pressable, Share, View } from "react-native";
-import { Button, Card, Icon, Screen, Text } from "../../components/ui";
+import { GradientCard, Sticker } from "../../components/fun";
+import { Button, Icon, Screen, Text } from "../../components/ui";
 import type { SymbolName } from "../../components/ui";
 import { useCurrentMember } from "../../lib/session";
-import { colors, radius, spacing } from "../../lib/theme";
+import { colors, gradients, radius, spacing } from "../../lib/theme";
 
 type Channel = { id: string; label: string; icon: SymbolName };
 
@@ -31,12 +32,11 @@ export default function Invite() {
     );
   }
 
-  const { group, member } = current;
+  const { group } = current;
   const code = group.inviteCode;
   const link = Linking.createURL("onboarding/join", { queryParams: { code } });
-  const goal = (member.goal ?? "show up").replace(/^./, (c) => c.toLowerCase());
-  const owe = group.hangout ?? "a hangout";
-  const message = `Join my Raincheck crew: ${goal} daily, miss a day and you owe ${owe}. Code ${code} ${link}`;
+  const owe = group.hangout ?? "tacos";
+  const message = `Join my crew on Raincheck. We each pick a daily goal, and if you miss a day you owe the crew ${owe}. Code: ${code} ${link}`;
 
   const share = async (channel: string) => {
     try {
@@ -75,23 +75,21 @@ export default function Invite() {
         </View>
       }
     >
-      <Text variant="title1" style={{ marginTop: spacing.xxl }}>
+      <Text variant="largeTitle" style={{ marginTop: spacing.xxl }}>
         Your crew is ready.
       </Text>
-      <Text variant="callout" color={colors.secondaryLabel} style={{ marginTop: spacing.sm }}>
-        Invite up to 5 people. It’s more fun when someone else might owe tacos.
+      <Text variant="callout" weight="600" color={colors.secondaryLabel} style={{ marginTop: spacing.sm }}>
+        Invite up to 5 people. It&apos;s more fun when someone else might owe {owe}.
       </Text>
 
-      <Card style={{ marginTop: spacing.xxl, alignItems: "center", gap: spacing.sm }}>
-        <Text variant="footnote" color={colors.secondaryLabel} weight="600">
-          INVITE CODE
-        </Text>
+      <GradientCard colors={gradients.story} style={{ marginTop: spacing.xxl, alignItems: "center", gap: spacing.sm }}>
+        <Sticker label="INVITE CODE" color={colors.white} tilt={-4} size="sm" style={{ alignSelf: "center" }} />
         <View testID="invite-code">
-          <Text variant="largeTitle" style={{ fontSize: 44, letterSpacing: 6 }}>
+          <Text variant="display" color={colors.white} style={{ fontSize: 50, lineHeight: 58, letterSpacing: 6 }}>
             {code}
           </Text>
         </View>
-        <Text variant="caption" color={colors.tertiaryLabel} numberOfLines={1}>
+        <Text variant="caption" color="rgba(255,255,255,0.85)" numberOfLines={1}>
           {link}
         </Text>
         <Button
@@ -103,7 +101,7 @@ export default function Invite() {
           onPress={copy}
           style={{ marginTop: spacing.sm }}
         />
-      </Card>
+      </GradientCard>
 
       <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: spacing.xxl }}>
         {CHANNELS.map((c) => (
@@ -119,15 +117,17 @@ export default function Invite() {
               style={{
                 width: 60,
                 height: 60,
-                borderRadius: radius.lg,
+                borderRadius: radius.pill,
                 backgroundColor: colors.surface,
+                borderWidth: 2,
+                borderColor: colors.label,
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
               <Icon name={c.icon} size={26} color={colors.label} />
             </View>
-            <Text variant="caption" color={colors.secondaryLabel}>
+            <Text variant="caption" weight="700" color={colors.label}>
               {c.label}
             </Text>
           </Pressable>

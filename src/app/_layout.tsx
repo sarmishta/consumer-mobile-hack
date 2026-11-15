@@ -1,3 +1,4 @@
+import { LilitaOne_400Regular, useFonts } from "@expo-google-fonts/lilita-one";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -25,6 +26,8 @@ function OnboardingGate() {
 }
 
 export default function RootLayout() {
+  const [fontsLoaded, fontError] = useFonts({ LilitaOne_400Regular });
+  if (!fontsLoaded && !fontError) return null;
   return (
     <ConvexProvider client={convex}>
       <SessionProvider>

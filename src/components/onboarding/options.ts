@@ -28,12 +28,15 @@ export const NUDGE_TIMES = [
   { value: "21:00", label: "9 pm", icon: "moon" },
 ] as const satisfies readonly { value: string; label: string; icon: SymbolName }[];
 
-export const HANGOUTS = [
-  { id: "tacos", label: "Tacos", emoji: "🌮" },
-  { id: "coffee", label: "Coffee", emoji: "☕" },
-  { id: "movie", label: "Movie night", emoji: "🍿" },
-  { id: "custom", label: "Something else", emoji: "✨" },
-] as const;
+export type StakeKind = "hangout" | "treat" | "favor" | "dare";
+
+/** What a missed day costs. Examples finish the sentence "Jordan owes the crew …". */
+export const STAKE_KINDS: { kind: StakeKind; label: string; icon: SymbolName; examples: string[] }[] = [
+  { kind: "hangout", label: "A hangout", icon: "person.2.fill", examples: ["tacos", "coffee", "a movie night"] },
+  { kind: "treat", label: "A treat", icon: "gift.fill", examples: ["the next coffee", "snacks for game night"] },
+  { kind: "favor", label: "A favor", icon: "hand.raised.fill", examples: ["a night of dishes", "an airport ride"] },
+  { kind: "dare", label: "A dare", icon: "bolt.fill", examples: ["a karaoke song", "a cold plunge"] },
+];
 
 export function testIdSlug(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "-");

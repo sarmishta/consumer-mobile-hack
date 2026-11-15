@@ -11,6 +11,7 @@ import { AVATARS, colors, spacing } from "../../lib/theme";
 export default function ProfileStep() {
   const current = useCurrentMember();
   const update = useMutation(api.profile.update);
+  const nameCrew = useMutation(api.crewName.nameAfterCreator);
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState<string | null>(null);
@@ -48,6 +49,7 @@ export default function ProfileStep() {
         photoStorageId = (await response.json()).storageId;
       }
       await update({ userId, name: name.trim(), avatar: emoji, photoStorageId });
+      await nameCrew({ userId, firstName: name.trim() });
       router.replace("/(tabs)");
     } catch (e) {
       console.warn("Profile save failed", e);

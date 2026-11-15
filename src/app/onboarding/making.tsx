@@ -3,12 +3,12 @@ import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Animated, View } from "react-native";
 import { api } from "../../../convex/_generated/api";
-import { HANGOUTS, KINDS, NUDGE_TIMES } from "../../components/onboarding/options";
-import { FallingRaindrop } from "../../components/onboarding/Raindrop";
+import { KINDS, NUDGE_TIMES } from "../../components/onboarding/options";
+import { Drizzle } from "../../components/characters";
 import { useOnboarding } from "../../components/onboarding/store";
 import { Button, Icon, Screen, Text } from "../../components/ui";
 import { useSession } from "../../lib/session";
-import { AVATARS, colors, localToday, spacing } from "../../lib/theme";
+import { AVATARS, colors, localToday, radius, spacing } from "../../lib/theme";
 
 const MIN_MS = 2600;
 
@@ -20,6 +20,7 @@ export default function MakingYourCrew() {
   const createGroup = useMutation(api.groups.create);
   const setGoal = useMutation(api.members.setGoal);
   const setPrefs = useMutation(api.profile.setMemberPrefs);
+  const setStake = useMutation(api.stake.setStake);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const started = useRef(-1);
@@ -28,7 +29,7 @@ export default function MakingYourCrew() {
     `${answers.emoji} ${answers.goal}`,
     `${KINDS.find((k) => k.kind === answers.kind)?.label ?? "Your"} crew`,
     `Nudge at ${NUDGE_TIMES.find((t) => t.value === answers.nudgeTime)?.label ?? "6 pm"}`,
-    `Missed day = ${answers.hangout || HANGOUTS[0].label.toLowerCase()}`,
+    `Miss a day, owe ${answers.hangout.trim() || "tacos"}`,
   ];
   const [ticks] = useState(() => lines.map(() => new Animated.Value(0)));
 
@@ -46,18 +47,23 @@ export default function MakingYourCrew() {
       const kind = answers.kind ?? "friends";
       const userId = await createUser({ name: "Me", avatar: AVATARS[Math.floor(Math.random() * AVATARS.length)] });
       const label = answers.goal.trim() || "Daily";
-      await createGroup({
+      const groupId = await createGroup({
         userId,
         kind,
         today: localToday(),
         hangout: answers.hangout.trim() || undefined,
-        name: `${label.length > 26 ? label.slice(0, 26).trim() : label} crew`,
+        name: "My crew",
       });
       const mine = await convex.query(api.groups.mine, { userId });
-      if (!mine) throw new Error("Member row missing after group create");
+      if (!mine) throw new Error("Member row missing after crew create");
       const memberId = mine.member._id;
       await setGoal({ memberId, goal: label, emoji: answers.emoji });
       await setPrefs({ memberId, goalType: answers.goalType ?? "custom", nudgeTime: answers.nudgeTime ?? "18:00" });
+      if (answers.stakeKind && answers.hangout.trim()) {
+        await setStake({ groupId, stake: answers.hangout, kind: answers.stakeKind }).catch((e) =>
+          console.warn("Saving stake kind failed", e),
+        );
+      }
       await setUserId(userId);
     };
 
@@ -71,10 +77,10 @@ export default function MakingYourCrew() {
   }, [attempt]);
 
   return (
-    <Screen background={colors.surface}>
+    <Screen background={colors.rainSoft}>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: spacing.xxl }}>
-        <FallingRaindrop />
-        <Text variant="title2" align="center">
+        <Drizzle size={220} mood={error ? "sheepish" : "pumped"} />
+        <Text variant="largeTitle" align="center">
           {error ? "Hit a puddle." : "Making your crew…"}
         </Text>
         <View style={{ gap: spacing.md, alignSelf: "stretch", paddingHorizontal: spacing.xxl }}>
@@ -86,12 +92,20 @@ export default function MakingYourCrew() {
                 flexDirection: "row",
                 alignItems: "center",
                 gap: spacing.md,
+                backgroundColor: colors.surface,
+                borderRadius: radius.pill,
+                paddingVertical: spacing.sm,
+                paddingHorizontal: spacing.md,
                 opacity: ticks[i],
-                transform: [{ translateY: ticks[i].interpolate({ inputRange: [0, 1], outputRange: [8, 0] }) }],
+                transform: [
+                  { translateY: ticks[i].interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) },
+                  { scale: ticks[i].interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] }) },
+                  { rotate: i % 2 ? "1.5deg" : "-1.5deg" },
+                ],
               }}
             >
-              <Icon name="checkmark.circle.fill" size={22} color={colors.success} />
-              <Text variant="callout" numberOfLines={1} style={{ flex: 1 }}>
+              <Icon name="checkmark.circle.fill" size={24} color={colors.mint} />
+              <Text variant="headline" weight="700" numberOfLines={1} style={{ flex: 1 }}>
                 {line}
               </Text>
             </Animated.View>

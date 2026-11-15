@@ -1,53 +1,87 @@
-/** Light native-iOS design tokens. Import from "@/lib/theme" or a relative path. */
+/** Vivid light social-camera design tokens. Import from "@/lib/theme" or a relative path. */
 export const colors = {
-  /** systemGroupedBackground: screen background behind inset-grouped sections. */
-  bg: "#F2F2F7",
-  /** secondarySystemGroupedBackground: cards, rows, sheets. */
+  /** Warm cream screen background. */
+  bg: "#FFF6EA",
+  /** Cards, rows, sheets. */
   surface: "#FFFFFF",
   /** Pressed state for rows and plain surfaces. */
-  surfacePressed: "#E5E5EA",
+  surfacePressed: "#F6ECDD",
   /** Neutral fill for placeholders, tracks, and inactive chips. */
-  fill: "#EEEEF0",
-  separator: "#C6C6C8",
-  label: "#000000",
-  secondaryLabel: "#6C6C70",
-  tertiaryLabel: "#AEAEB2",
-  /** Warm amber accent. Use accentInk for text and icons on white; accent for fills. */
-  accent: "#FFB547",
-  accentInk: "#C77700",
-  accentSoft: "#FFF4E0",
+  fill: "#F4EADB",
+  separator: "#EADFCF",
+  label: "#17131F",
+  secondaryLabel: "#6E6577",
+  tertiaryLabel: "#B3AABB",
+  /** Sunny amber accent. Use accentInk for text and icons on white; accent for fills. */
+  accent: "#FFC233",
+  accentInk: "#B86E00",
+  accentSoft: "#FFF0C7",
   /** Text color on an accent fill. */
-  onAccent: "#2A1A00",
+  onAccent: "#1F1400",
   /** Rain blue secondary. */
-  rain: "#3D7BF7",
-  rainSoft: "#E7EFFF",
+  rain: "#2F6BFF",
+  rainSoft: "#E2ECFF",
   /** Coral for rainchecks. */
-  coral: "#FF6B5B",
-  coralSoft: "#FFEAE7",
-  success: "#34C759",
+  coral: "#FF5A4E",
+  coralSoft: "#FFE4E0",
+  grape: "#7B5CFF",
+  grapeSoft: "#EEE8FF",
+  mint: "#1FC98E",
+  mintSoft: "#DDF8EC",
+  success: "#1DBF73",
   danger: "#FF3B30",
   white: "#FFFFFF",
 };
 
-/** SF-like type scale (iOS default Dynamic Type sizes). */
+/** Gradient stops for expo-linear-gradient. story is the ring for whoever checked in today. */
+export const gradients = {
+  story: ["#FFB547", "#FF6B5B", "#3D7BF7"],
+  sunrise: ["#FFD45C", "#FF9A3D"],
+  coral: ["#FF8A5B", "#FF4F6D"],
+  rain: ["#4D8BFF", "#7B5CFF"],
+  night: ["#2B2D6E", "#6A43E0"],
+  mint: ["#2EDC9B", "#1FA9C9"],
+} as const satisfies Record<string, readonly [string, string, ...string[]]>;
+
+/** Font faces. Avenir Next ships with iOS; Lilita One loads through @expo-google-fonts in the root layout. */
+export const fonts = {
+  display: "LilitaOne_400Regular",
+  heavy: "AvenirNext-Heavy",
+  bold: "AvenirNext-Bold",
+  demi: "AvenirNext-DemiBold",
+  medium: "AvenirNext-Medium",
+};
+
+/** Avenir Next face for a numeric weight. */
+export function fontForWeight(weight: string | number | undefined) {
+  const w = Number(weight);
+  if (w >= 800) return fonts.heavy;
+  if (w >= 700 || weight === "bold") return fonts.bold;
+  if (w >= 600) return fonts.demi;
+  return fonts.medium;
+}
+
+/** Chunky social type scale: Lilita One for display and stickers, Avenir Next for UI. */
 export const type = {
-  largeTitle: { fontSize: 34, lineHeight: 41, fontWeight: "700" },
-  title1: { fontSize: 28, lineHeight: 34, fontWeight: "700" },
-  title2: { fontSize: 22, lineHeight: 28, fontWeight: "700" },
-  title3: { fontSize: 20, lineHeight: 25, fontWeight: "600" },
-  headline: { fontSize: 17, lineHeight: 22, fontWeight: "600" },
-  body: { fontSize: 17, lineHeight: 22, fontWeight: "400" },
-  callout: { fontSize: 16, lineHeight: 21, fontWeight: "400" },
-  subhead: { fontSize: 15, lineHeight: 20, fontWeight: "400" },
-  footnote: { fontSize: 13, lineHeight: 18, fontWeight: "400" },
-  caption: { fontSize: 12, lineHeight: 16, fontWeight: "400" },
+  display: { fontSize: 52, lineHeight: 58, fontFamily: fonts.display },
+  largeTitle: { fontSize: 38, lineHeight: 44, fontFamily: fonts.display },
+  title1: { fontSize: 30, lineHeight: 36, fontFamily: fonts.heavy },
+  title2: { fontSize: 23, lineHeight: 29, fontFamily: fonts.heavy },
+  title3: { fontSize: 20, lineHeight: 26, fontFamily: fonts.bold },
+  headline: { fontSize: 17, lineHeight: 22, fontFamily: fonts.demi },
+  body: { fontSize: 17, lineHeight: 23, fontFamily: fonts.medium },
+  callout: { fontSize: 16, lineHeight: 21, fontFamily: fonts.medium },
+  subhead: { fontSize: 15, lineHeight: 20, fontFamily: fonts.medium },
+  footnote: { fontSize: 13, lineHeight: 18, fontFamily: fonts.demi },
+  caption: { fontSize: 12, lineHeight: 16, fontFamily: fonts.demi },
+  sticker: { fontSize: 19, lineHeight: 23, fontFamily: fonts.display },
 } as const;
 
 export type TypeVariant = keyof typeof type;
 
 export const spacing = { xxs: 2, xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32, huge: 48 };
 
-export const radius = { sm: 8, md: 12, lg: 16, xl: 22, pill: 999 };
+export const radius = { sm: 10, md: 16, lg: 22, xl: 28, pill: 999 };
 
 export const AVATARS = ["🦊", "🐻", "🐼", "🐸", "🦉", "🐙", "🌻", "🌙", "🔥", "🍓", "🎧", "🌈"];
 export const GOAL_EMOJIS = ["💪", "📞", "📚", "🏃", "🧘", "💧", "🥗", "✍️", "🎸", "🧹", "😴", "🌱"];

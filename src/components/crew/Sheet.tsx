@@ -1,16 +1,17 @@
 import type { ReactNode } from "react";
-import { Modal, Pressable, View } from "react-native";
-import { colors, radius, spacing } from "../../lib/theme";
+import { KeyboardAvoidingView, Modal, Platform, Pressable, View } from "react-native";
+import { colors, spacing } from "../../lib/theme";
 
 export function Sheet({ visible, onClose, children }: { visible: boolean; onClose: () => void; children: ReactNode }) {
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.25)" }} onPress={onClose} />
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
+      <Pressable style={{ flex: 1, backgroundColor: "rgba(23,19,31,0.45)" }} onPress={onClose} />
       <View
         style={{
           backgroundColor: colors.surface,
-          borderTopLeftRadius: radius.xl,
-          borderTopRightRadius: radius.xl,
+          borderTopLeftRadius: 36,
+          borderTopRightRadius: 36,
           padding: spacing.xxl,
           paddingBottom: spacing.huge,
           gap: spacing.md,
@@ -18,6 +19,7 @@ export function Sheet({ visible, onClose, children }: { visible: boolean; onClos
       >
         {children}
       </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

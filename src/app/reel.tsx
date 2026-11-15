@@ -1,9 +1,11 @@
 import { useQuery } from "convex/react";
+import { LinearGradient } from "expo-linear-gradient";
 import * as Sharing from "expo-sharing";
 import { router } from "expo-router";
 import { useRef, useState } from "react";
 import type { ComponentRef } from "react";
 import { Alert, Pressable, View } from "react-native";
+import Animated, { SlideInLeft, SlideInRight } from "react-native-reanimated";
 import { captureRef } from "react-native-view-shot";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { api } from "../../convex/_generated/api";
@@ -16,6 +18,7 @@ export default function Reel() {
   const { group } = useCurrentMember();
   const week = useQuery(api.reel.week, group ? { groupId: group._id } : "skip");
   const [index, setIndex] = useState(0);
+  const [forward, setForward] = useState(true);
   const [sharing, setSharing] = useState(false);
   const slideRef = useRef<ComponentRef<typeof View>>(null);
 
@@ -38,26 +41,26 @@ export default function Reel() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: slide?.background ?? colors.surface }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: slide?.gradient[0] ?? colors.grape }}>
       <View style={{ flexDirection: "row", gap: spacing.xs, paddingHorizontal: spacing.md, paddingTop: spacing.sm }}>
         {slides.map((item, i) => (
           <View
             key={item.key}
             style={{
               flex: 1,
-              height: 3,
+              height: 4,
               borderRadius: radius.pill,
-              backgroundColor: i <= current ? colors.label : "rgba(0,0,0,0.15)",
+              backgroundColor: i <= current ? colors.white : "rgba(255,255,255,0.35)",
             }}
           />
         ))}
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: spacing.lg, paddingTop: spacing.md }}>
-        <Text variant="subhead" weight="700" style={{ flex: 1 }}>
+        <Text variant="sticker" color={colors.white} style={{ flex: 1 }}>
           Sunday Reel
         </Text>
         <Pressable testID="reel-close" accessibilityRole="button" accessibilityLabel="Close" hitSlop={12} onPress={() => router.back()}>
-          <Icon name="xmark" size={20} weight="semibold" />
+          <Icon name="xmark" size={22} weight="bold" color={colors.white} />
         </Pressable>
       </View>
 
@@ -71,13 +74,26 @@ export default function Reel() {
             justifyContent: "center",
             alignItems: "center",
             padding: spacing.xxl,
+            overflow: "hidden",
           }}
         >
-          {slide ? slide.content : <Text color={colors.secondaryLabel}>Rolling the reel…</Text>}
+          {slide ? (
+            <LinearGradient colors={slide.gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={absoluteFill} />
+          ) : null}
+          {slide ? (
+            <Animated.View
+              key={slide.key}
+              entering={(forward ? SlideInRight : SlideInLeft).springify().damping(18)}
+              style={{ alignItems: "center", alignSelf: "stretch" }}
+            >
+              {slide.content}
+            </Animated.View>
+          ) : (
+            <Text color={colors.white}>Rolling the reel…</Text>
+          )}
           <Text
-            variant="footnote"
-            weight="700"
-            color={colors.secondaryLabel}
+            variant="sticker"
+            color="rgba(255,255,255,0.85)"
             style={{ position: "absolute", bottom: spacing.lg, letterSpacing: 2 }}
           >
             RAINCHECK
@@ -88,19 +104,26 @@ export default function Reel() {
             testID="reel-prev"
             accessibilityLabel="Previous"
             style={{ flex: 1 }}
-            onPress={() => setIndex(Math.max(0, current - 1))}
+            onPress={() => {
+              setForward(false);
+              setIndex(Math.max(0, current - 1));
+            }}
           />
           <Pressable
             testID="reel-next"
             accessibilityLabel="Next"
             style={{ flex: 2 }}
-            onPress={() => (current < slides.length - 1 ? setIndex(current + 1) : router.back())}
+            onPress={() => {
+              if (current >= slides.length - 1) return router.back();
+              setForward(true);
+              setIndex(current + 1);
+            }}
           />
         </View>
       </View>
 
-      <View style={{ padding: spacing.lg }}>
-        <Button testID="reel-share" label="Share to Stories" icon="square.and.arrow.up" loading={sharing} disabled={!slide} onPress={share} />
+      <View style={{ padding: spacing.lg, backgroundColor: slide?.background ?? colors.grape }}>
+        <Button testID="reel-share" label="Share to Stories" icon="square.and.arrow.up" style={{ backgroundColor: colors.white, borderBottomColor: "rgba(0,0,0,0.12)" }} loading={sharing} disabled={!slide} onPress={share} />
       </View>
     </SafeAreaView>
   );

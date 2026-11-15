@@ -1,16 +1,21 @@
 import { useMutation, useQuery } from "convex/react";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Share, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Alert, Pressable, Share, View } from "react-native";
 import { api } from "../../../convex/_generated/api";
 import { EndDayConfirm } from "../../components/crew/EndDayConfirm";
 import { RaincheckCard } from "../../components/crew/RaincheckCard";
 import { RaincheckMoment } from "../../components/crew/RaincheckMoment";
 import { Sheet } from "../../components/crew/Sheet";
 import { formatDay } from "../../components/crew/format";
-import { Avatar, Button, Icon, LargeTitle, Placeholder, Row, Screen, Section, Text } from "../../components/ui";
+import { StakePicker } from "../../components/onboarding/StakePicker";
+import type { StakeKind } from "../../components/onboarding/options";
+import { Flame } from "../../components/characters";
+import { Sticker } from "../../components/fun";
+import { Avatar, Button, Icon, LargeTitle, Row, Screen, Section, Text } from "../../components/ui";
 import { useCurrentMember } from "../../lib/session";
-import { colors, spacing } from "../../lib/theme";
+import { colors, gradients, radius, spacing } from "../../lib/theme";
 
 export default function Crew() {
   const { group, member } = useCurrentMember();
@@ -19,6 +24,10 @@ export default function Crew() {
   const open = useQuery(api.rainchecks.listOpen, groupArgs);
   const cashed = useQuery(api.crew.cashedIn, groupArgs);
   const endDay = useMutation(api.rainchecks.endDay);
+  const renameCrew = useMutation(api.crewName.rename);
+  const setStake = useMutation(api.stake.setStake);
+  const [stakeDraft, setStakeDraft] = useState<{ kind: StakeKind | null; stake: string } | null>(null);
+  const [savingStake, setSavingStake] = useState(false);
   const [endedDay, setEndedDay] = useState<string | null>(null);
   const [ending, setEnding] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -57,17 +66,55 @@ export default function Crew() {
             key={person.memberId}
             title={person.name}
             subtitle={person.goal ? `${person.emoji ?? ""} ${person.goal}`.trim() : "No goal yet"}
-            left={<Avatar name={person.name} emoji={person.avatar} size={40} ring={person.doneToday} />}
+            left={<Avatar name={person.name} emoji={person.avatar} size={42} ring={person.doneToday} />}
             right={
-              <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.xxs }}>
-                <Icon name="flame.fill" size={15} color={person.streak > 0 ? colors.accentInk : colors.tertiaryLabel} />
-                <Text variant="callout" color={colors.secondaryLabel}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: spacing.xxs,
+                  backgroundColor: person.streak > 0 ? colors.accentSoft : colors.fill,
+                  borderRadius: radius.pill,
+                  paddingHorizontal: spacing.sm,
+                  paddingVertical: spacing.xxs,
+                }}
+              >
+                <View style={{ opacity: person.streak > 0 ? 1 : 0.4 }}>
+                  <Flame size={16} />
+                </View>
+                <Text variant="headline" weight="800" color={person.streak > 0 ? colors.accentInk : colors.tertiaryLabel}>
                   {person.streak}
                 </Text>
               </View>
             }
           />
         ))}
+        <Row
+          testID="rename-crew"
+          title="Rename crew"
+          value={group.name}
+          icon="pencil"
+          iconColor={colors.grape}
+          onPress={() =>
+            Alert.prompt(
+              "Rename crew",
+              undefined,
+              (name) => {
+                if (name?.trim()) renameCrew({ groupId: group._id, name });
+              },
+              "plain-text",
+              group.name,
+            )
+          }
+        />
+        <Row
+          testID="edit-stake"
+          title="What you owe"
+          value={group.hangout ?? "Not set"}
+          icon="gift.fill"
+          iconColor={colors.coral}
+          onPress={() => setStakeDraft({ kind: group.stakeKind ?? null, stake: group.hangout ?? "" })}
+        />
         <Row
           testID="invite-share"
           title="Invite code"
@@ -76,17 +123,33 @@ export default function Crew() {
           iconColor={colors.rain}
           onPress={() =>
             Share.share({
-              message: `Join ${group.name} on RAINCHECK. Invite code: ${group.inviteCode}. Bad days, good nights.`,
+              message: `Join ${group.name} on Raincheck. Code: ${group.inviteCode}. Bad days, good nights.`,
             })
           }
         />
       </Section>
 
-      <Text variant="footnote" color={colors.secondaryLabel} style={{ marginTop: spacing.xxl, marginLeft: spacing.lg, marginBottom: spacing.sm }}>
-        RAINCHECKS
-      </Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.xxl, marginBottom: spacing.md }}>
+        <Text variant="largeTitle" style={{ fontSize: 28, lineHeight: 34 }}>
+          Rainchecks
+        </Text>
+        {open && open.length > 0 ? <Sticker label={String(open.length)} color={colors.coral} ink={colors.white} tilt={8} size="sm" /> : null}
+      </View>
       {open === undefined ? null : open.length === 0 ? (
-        <Placeholder height={120} icon="cloud.sun" label="No rainchecks. Clear skies." tint="rain" />
+        <View
+          style={{
+            alignItems: "center",
+            backgroundColor: colors.rainSoft,
+            borderRadius: radius.xl,
+            paddingVertical: spacing.xl,
+            gap: spacing.xs,
+          }}
+        >
+          <Icon name="sun.max.fill" size={40} color={colors.rain} />
+          <Text variant="headline" weight="800" color={colors.rain}>
+            No rainchecks. Clear skies.
+          </Text>
+        </View>
       ) : (
         <View style={{ gap: spacing.md }}>
           {open.map((raincheck) => (
@@ -95,26 +158,52 @@ export default function Crew() {
         </View>
       )}
 
-      <Section>
-        <Row
-          testID="reel-open"
-          title="Sunday Reel"
-          subtitle="Your crew's week, story style"
-          icon="play.rectangle.fill"
-          iconColor={colors.accent}
-          onPress={() => router.push("/reel")}
-        />
-      </Section>
+      <Pressable
+        testID="reel-open"
+        accessibilityRole="button"
+        accessibilityLabel="Sunday Reel"
+        onPress={() => router.push("/reel")}
+        style={({ pressed }) => ({ marginTop: spacing.xxl, transform: [{ scale: pressed ? 0.97 : 1 }] })}
+      >
+        <LinearGradient
+          colors={gradients.night}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ borderRadius: radius.xl, padding: spacing.xl, flexDirection: "row", alignItems: "center", gap: spacing.md }}
+        >
+          <View style={{ flex: 1, gap: spacing.xs }}>
+            <Sticker label="NEW" color={colors.accent} tilt={-6} size="sm" />
+            <Text variant="largeTitle" color={colors.white} style={{ fontSize: 30, lineHeight: 36 }}>
+              Sunday Reel
+            </Text>
+            <Text variant="subhead" weight="600" color="rgba(255,255,255,0.8)">
+              Your crew&apos;s week, story style
+            </Text>
+          </View>
+          <View
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: 28,
+              backgroundColor: colors.white,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Icon name="play.fill" size={24} color={colors.grape} />
+          </View>
+        </LinearGradient>
+      </Pressable>
 
       {cashed && cashed.length > 0 ? (
         <Section title="Cashed in">
           {cashed.map((raincheck) => (
             <Row
               key={raincheck._id}
-              title={`${raincheck.name} · ${raincheck.plan}`}
-              subtitle={`Owed from ${formatDay(raincheck.day)}`}
+              title={`${raincheck.name} made good on ${raincheck.plan}`}
+              subtitle={`Missed ${formatDay(raincheck.day)}`}
               left={<Avatar name={raincheck.name} photoUrl={raincheck.photoUrl} emoji={raincheck.avatar} size={40} />}
-              right={<Icon name="checkmark.seal.fill" size={20} color={colors.success} />}
+              right={<Icon name="checkmark.seal.fill" size={22} color={colors.mint} />}
             />
           ))}
         </Section>
@@ -126,10 +215,41 @@ export default function Crew() {
           label="End day (demo)"
           icon="moon.fill"
           variant="secondary"
+          haptic
           loading={ending}
           onPress={() => setConfirming(true)}
         />
       </View>
+
+      <Sheet visible={!!stakeDraft} onClose={() => setStakeDraft(null)}>
+        <Text variant="largeTitle" style={{ fontSize: 30, lineHeight: 36 }}>
+          What you owe
+        </Text>
+        <Text variant="callout" color={colors.secondaryLabel}>
+          What does a missed day cost your crew?
+        </Text>
+        {stakeDraft ? (
+          <StakePicker kind={stakeDraft.kind} stake={stakeDraft.stake} onChange={(kind, stake) => setStakeDraft({ kind, stake })} />
+        ) : null}
+        <Button
+          testID="stake-save"
+          label="Save"
+          loading={savingStake}
+          disabled={!stakeDraft?.kind || !stakeDraft.stake.trim()}
+          onPress={async () => {
+            if (!stakeDraft?.kind) return;
+            setSavingStake(true);
+            try {
+              await setStake({ groupId: group._id, stake: stakeDraft.stake, kind: stakeDraft.kind });
+              setStakeDraft(null);
+            } catch {
+              Alert.alert("Couldn't save that", "Try again in a sec.");
+            } finally {
+              setSavingStake(false);
+            }
+          }}
+        />
+      </Sheet>
 
       <Sheet
         visible={confirming || !!moment}
