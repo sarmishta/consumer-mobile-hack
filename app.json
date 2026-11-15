@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Consumer Mobile Hack",
+    "name": "RAINCHECK",
     "slug": "consumer-mobile-hack",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.sarmishta.consumermobilehack"
@@ -24,7 +24,9 @@
     },
     "scheme": "consumermobilehack",
     "plugins": [
-      "expo-router"
-    ]
+      "expo-router",
+      "expo-secure-store"
+    ],
+    "backgroundColor": "#0F1530"
   }
 }

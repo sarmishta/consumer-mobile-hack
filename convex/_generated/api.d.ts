@@ -8,7 +8,11 @@
  * @module
  */
 
-import type * as items from "../items.js";
+import type * as checkins from "../checkins.js";
+import type * as groups from "../groups.js";
+import type * as members from "../members.js";
+import type * as rainchecks from "../rainchecks.js";
+import type * as users from "../users.js";
 
 import type {
   ApiFromModules,
@@ -17,7 +21,11 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  items: typeof items;
+  checkins: typeof checkins;
+  groups: typeof groups;
+  members: typeof members;
+  rainchecks: typeof rainchecks;
+  users: typeof users;
 }>;
 
 /**
