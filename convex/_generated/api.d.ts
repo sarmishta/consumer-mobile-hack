@@ -9,6 +9,7 @@
  */
 
 import type * as checkins from "../checkins.js";
+import type * as feed from "../feed.js";
 import type * as files from "../files.js";
 import type * as groups from "../groups.js";
 import type * as members from "../members.js";
@@ -23,6 +24,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   checkins: typeof checkins;
+  feed: typeof feed;
   files: typeof files;
   groups: typeof groups;
   members: typeof members;
