@@ -4,6 +4,8 @@ import { v } from "convex/values";
 const PLANS = {
   friends: ["coffee", "dinner", "movie night", "a long walk", "tacos", "brunch"],
   family: ["coffee", "dinner", "movie night", "a call to Grandma", "pancake breakfast", "board game night"],
+  partner: ["date night", "breakfast in bed", "a long walk", "movie night", "cooking together", "dessert run"],
+  roommates: ["takeout night", "game night", "a deep clean together", "movie night", "tacos", "brunch"],
 };
 
 function nextDay(day: string) {
@@ -57,7 +59,7 @@ export const endDay = mutation({
       await ctx.db.insert("rainchecks", {
         groupId: group._id,
         memberId: member._id,
-        plan: plans[Math.floor(Math.random() * plans.length)],
+        plan: group.hangout ?? plans[Math.floor(Math.random() * plans.length)],
         day: group.currentDay,
         cashedIn: false,
       });
@@ -70,9 +72,13 @@ export const endDay = mutation({
 });
 
 export const cashIn = mutation({
-  args: { raincheckId: v.id("rainchecks") },
+  args: { raincheckId: v.id("rainchecks"), photoStorageId: v.optional(v.id("_storage")) },
   handler: async (ctx, args) => {
-    await ctx.db.patch("rainchecks", args.raincheckId, { cashedIn: true });
+    await ctx.db.patch("rainchecks", args.raincheckId, {
+      cashedIn: true,
+      cashedInAt: Date.now(),
+      cashedInPhotoStorageId: args.photoStorageId,
+    });
     return null;
   },
 });
