@@ -97,6 +97,7 @@ export function Eye({
   r = 5,
   kind = "dot",
   look = 0,
+  tilt = 0,
 }: {
   x: number;
   y: number;
@@ -104,6 +105,8 @@ export function Eye({
   kind?: EyeKind;
   /** Shifts the highlight sideways, in grid units, so the eye looks left or right. */
   look?: number;
+  /** Degrees the lid of a half-closed eye droops. */
+  tilt?: number;
 }) {
   if (kind === "shut") {
     return <Path d={`M${x - r} ${y} Q${x} ${y + r * 0.7} ${x + r} ${y}`} fill="none" {...outline} strokeWidth={3.2} />;
@@ -113,7 +116,7 @@ export function Eye({
   }
   if (kind === "half") {
     return (
-      <G>
+      <G transform={`rotate(${tilt} ${x} ${y})`}>
         <Path d={`M${x - r} ${y} A${r} ${r} 0 0 0 ${x + r} ${y} Z`} fill={INK} />
         <Path d={`M${x - r - 1.5} ${y} H${x + r + 1.5}`} fill="none" {...outline} strokeWidth={3} />
       </G>

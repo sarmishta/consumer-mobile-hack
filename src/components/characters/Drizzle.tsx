@@ -8,8 +8,8 @@ export type DrizzleMood = "happy" | "sleepy" | "pumped" | "sheepish" | "party" |
 const BLUE = "#63B0FF";
 const BLUE_LIGHT = "#8ECBFF";
 const BLUE_DEEP = "#3A82E6";
-const BODY = "M68 8 C61 28 23 43 23 72 C23 94 39 109 60 109 C81 109 97 94 97 72 C97 48 73 36 68 8 Z";
-const BELLY = "M64 37 C57 49 34 57 34 75 C34 90 45 100 60 100 C75 100 87 90 87 75 C87 60 72 51 64 37 Z";
+const BODY = "M74 15 C66 34 20 42 20 74 C20 96 38 110 60 110 C82 110 100 96 100 74 C100 54 80 42 74 15 Z";
+const BELLY = "M68 43 C60 53 32 59 32 77 C32 92 44 102 60 102 C76 102 88 92 88 77 C88 63 74 55 68 43 Z";
 
 const ARMS: Record<DrizzleMood, [string, string]> = {
   happy: ["M28 80 Q19 85 17 93", "M92 80 Q101 85 103 93"],
@@ -60,7 +60,7 @@ function Mouth({ mood }: { mood: DrizzleMood }) {
     return <Path d="M54 79 Q60 80.5 66 79 Q65.5 88 60 88 Q54.5 88 54 79 Z" fill="#4A2231" {...outline} strokeWidth={3.2} />;
   }
   const d =
-    mood === "sleepy" ? "M56 82 Q60 84.5 64 82" : mood === "sheepish" ? "M51 82 Q55 78.5 59.5 81.5 Q64 84.5 69 79" : "M53 80 Q60 87.5 67 80";
+    mood === "sleepy" ? "M57 81 Q60 79 63 81 Q63.5 85 60 85 Q56.5 85 57 81 Z" : mood === "sheepish" ? "M51 82 Q55 78.5 59.5 81.5 Q64 84.5 69 79" : "M53 80 Q60 87.5 67 80";
   return <Path d={d} fill="none" {...outline} strokeWidth={3.4} />;
 }
 
@@ -98,22 +98,28 @@ export function Drizzle({
             )
           : null}
 
-        <Ellipse cx={48} cy={110} rx={7.5} ry={4.2} fill={INK} />
-        <Ellipse cx={72} cy={110} rx={7.5} ry={4.2} fill={INK} />
-        <Arm d={leftArm} />
-        <Arm d={rightArm} />
+        <Ellipse cx={47} cy={111.5} rx={8} ry={4.2} fill={INK} />
+        <Ellipse cx={73} cy={111.5} rx={8} ry={4.2} fill={INK} />
+        <G transform="translate(-3 1)">
+          <Arm d={leftArm} />
+        </G>
+        <G transform="translate(3 1)">
+          <Arm d={rightArm} />
+        </G>
 
-        <Path d={BODY} fill={BLUE_DEEP} {...outline} transform="translate(-5 2.5)" />
+        <Path d={BODY} fill={BLUE_DEEP} {...outline} transform="translate(-6 3)" />
         <Path d={BODY} fill={BLUE} {...outline} />
         <Path d={BELLY} fill={BLUE_LIGHT} />
-        <Path d="M36 60 Q40 48 51 40" fill="none" stroke="#FFFFFF" strokeWidth={4} strokeLinecap="round" opacity={0.9} />
-        <Circle cx={33.5} cy={68.5} r={2.3} fill="#FFFFFF" opacity={0.9} />
+        <Path d="M32 63 Q35 52 47 45" fill="none" stroke="#FFFFFF" strokeWidth={4} strokeLinecap="round" opacity={0.9} />
+        <Circle cx={30} cy={71} r={2.3} fill="#FFFFFF" opacity={0.9} />
 
-        <Eye x={47} y={71} kind={eye} look={look} />
-        <Eye x={73} y={71} kind={eye} look={look} />
-        <Blush x={38.5} y={81} />
-        <Blush x={81.5} y={81} />
-        <Mouth mood={mood} />
+        <G transform="translate(0 2.5)">
+          <Eye x={46} y={71} kind={eye} look={look} tilt={-12} />
+          <Eye x={74} y={71} kind={eye} look={look} tilt={12} />
+          <Blush x={36.5} y={81} />
+          <Blush x={83.5} y={81} />
+          <Mouth mood={mood} />
+        </G>
 
         {mood === "sleepy" ? (
           <G fill="none" {...outline}>
@@ -133,15 +139,15 @@ export function Drizzle({
         {mood === "sheepish" ? (
           <G>
             <Path d={dropPath(5)} fill="#DDF1FF" {...outline} strokeWidth={2.8} transform="translate(30 36) rotate(-18)" />
-            <G transform="translate(101 26) rotate(13)">
+            <G transform="translate(104 27) rotate(13)">
               <UmbrellaShape />
             </G>
-            <Circle cx={103.5} cy={55} r={6.2} fill={BLUE} {...outline} strokeWidth={3.6} />
+            <Circle cx={106.5} cy={56} r={6.2} fill={BLUE} {...outline} strokeWidth={3.6} />
           </G>
         ) : null}
 
         {mood === "party" ? (
-          <G transform="translate(43 38) rotate(-36)">
+          <G transform="translate(41 42) rotate(-36)">
             <Path d="M-13 0 L1 -27 L13 0 Z" fill="#FF6B5B" {...outline} strokeWidth={3.8} />
             <Path d="M-7 -8 L7 -4 M-2 -18 L5 -15" fill="none" stroke="#FFD45C" strokeWidth={3} strokeLinecap="round" />
             <Circle cx={1} cy={-28} r={4.6} fill="#FFD45C" {...outline} strokeWidth={3} />
@@ -149,7 +155,7 @@ export function Drizzle({
         ) : null}
 
         {mood === "wave" ? (
-          <Path d="M118 34 q4 5 3 11 M103 30 q-4 -5 -3 -11" fill="none" {...outline} strokeWidth={3} />
+          <Path d="M122 36 q4 5 3 11 M106 31 q-4 -5 -3 -11" fill="none" {...outline} strokeWidth={3} />
         ) : null}
       </Svg>
     </Idle>

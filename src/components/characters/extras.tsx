@@ -51,8 +51,8 @@ export function Sparkle({ size = 20, color = "#FFD45C" }: IconProps) {
 /** Small faceless raindrop decoration. */
 export function Raindrop({ size = 20, color = "#63B0FF" }: IconProps) {
   return (
-    <Svg width={size} height={size} viewBox="-12 -13.5 24 24">
-      <Path d={dropPath(7.5)} fill={color} {...outline} strokeWidth={2.2} />
+    <Svg width={size} height={size} viewBox="-12 -12.5 24 24">
+      <Path d={dropPath(7)} fill={color} {...outline} strokeWidth={2.2} />
       <Path d="M-4 3 Q-4 -0.5 -1.5 -3" fill="none" stroke="#FFFFFF" strokeWidth={1.8} strokeLinecap="round" opacity={0.9} />
       <Circle cx={-3.6} cy={5.6} r={0.9} fill="#FFFFFF" opacity={0.9} />
     </Svg>
