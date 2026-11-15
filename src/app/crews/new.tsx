@@ -6,8 +6,9 @@ import { api } from "../../../convex/_generated/api";
 import { GoalPicker } from "../../components/crews/GoalPicker";
 import type { CrewGoal } from "../../components/crews/GoalPicker";
 import { useFinishCrew } from "../../components/crews/useFinishCrew";
-import { HANGOUTS, KINDS, testIdSlug } from "../../components/onboarding/options";
-import type { GroupKind } from "../../components/onboarding/options";
+import { KINDS, STAKE_KINDS } from "../../components/onboarding/options";
+import type { GroupKind, StakeKind } from "../../components/onboarding/options";
+import { StakePicker } from "../../components/onboarding/StakePicker";
 import { Button, Chip, Icon, Input, Screen, Text } from "../../components/ui";
 import { useCurrentMember } from "../../lib/session";
 import { colors, localToday, spacing } from "../../lib/theme";
@@ -22,11 +23,13 @@ export default function NewCrew() {
   const firstName = user?.name.trim().split(/\s+/)[0] || "My";
   const [kind, setKind] = useState<GroupKind>("friends");
   const [name, setName] = useState<string | null>(null);
-  const [hangout, setHangout] = useState<string>(HANGOUTS[0].label);
+  const [stakeKind, setStakeKind] = useState<StakeKind>("hangout");
+  const [stake, setStakeText] = useState<string>(STAKE_KINDS[0].examples[0]);
   const [goal, setGoal] = useState<CrewGoal>({ goalType: null, goal: "", emoji: "🌱" });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const createGroup = useMutation(api.groups.create);
+  const setStake = useMutation(api.stake.setStake);
   const finish = useFinishCrew();
   const crewName = name ?? defaultName(firstName, kind);
 
@@ -35,7 +38,8 @@ export default function NewCrew() {
     setBusy(true);
     setError(null);
     try {
-      const groupId = await createGroup({ userId: user._id, name: crewName, kind, today: localToday(), hangout });
+      const groupId = await createGroup({ userId: user._id, name: crewName, kind, today: localToday(), hangout: stake });
+      await setStake({ groupId, stake, kind: stakeKind });
       await finish(user._id, groupId, goal);
     } catch (e) {
       console.warn("Create crew failed", e);
@@ -54,7 +58,7 @@ export default function NewCrew() {
           label="Create crew"
           onPress={create}
           loading={busy}
-          disabled={!user || !crewName.trim() || !goal.goal.trim()}
+          disabled={!user || !crewName.trim() || !goal.goal.trim() || !stake.trim()}
         />
       }
     >
@@ -77,11 +81,14 @@ export default function NewCrew() {
       <Input testID="new-crew-name" value={crewName} onChangeText={setName} maxLength={32} returnKeyType="done" />
 
       <Text variant="headline" style={{ marginTop: spacing.xxl, marginBottom: spacing.sm }}>Miss a day and you owe…</Text>
-      <View style={{ gap: spacing.sm }}>
-        {HANGOUTS.filter((h) => h.id !== "custom").map((h) => (
-          <Chip key={h.id} testID={`new-crew-hangout-${testIdSlug(h.id)}`} label={h.label} emoji={h.emoji} selected={hangout === h.label} onPress={() => setHangout(h.label)} />
-        ))}
-      </View>
+      <StakePicker
+        kind={stakeKind}
+        stake={stake}
+        onChange={(k, s) => {
+          setStakeKind(k);
+          setStakeText(s);
+        }}
+      />
 
       <Text variant="headline" style={{ marginTop: spacing.xxl, marginBottom: spacing.sm }}>My goal for this crew</Text>
       <GoalPicker value={goal} onChange={setGoal} />
