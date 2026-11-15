@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
@@ -16,9 +16,7 @@ type Photo = { uri: string; mimeType: string };
 const pickerOptions: ImagePicker.ImagePickerOptions = { mediaTypes: ["images"], quality: 0.6 };
 
 export default function CheckIn() {
-  const { member, group } = useCurrentMember();
-  const feed = useQuery(api.feed.today, group ? { groupId: group._id } : "skip");
-  const already = !!member && !!feed?.items.some((item) => item.memberId === member._id);
+  const { member } = useCurrentMember();
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
   const checkIn = useMutation(api.checkins.checkIn);
   const [photo, setPhoto] = useState<Photo | null>(null);
@@ -34,7 +32,7 @@ export default function CheckIn() {
       if (!permission.granted) {
         Alert.alert(
           fromCamera ? "Camera is off" : "Photos are off",
-          "Turn it on in Settings. A photo is your proof.",
+          "Turn it on in Settings, or check in without a photo.",
         );
         return;
       }
@@ -47,14 +45,13 @@ export default function CheckIn() {
     } catch {
       Alert.alert(
         fromCamera ? "No camera here" : "Couldn't open photos",
-        fromCamera ? "Choose a photo from your library instead." : "Try again, or snap one with the camera.",
+        fromCamera ? "Pick one from your library, or check in without a photo." : "Check in without a photo for now.",
       );
     }
   }
 
   async function submit() {
-    const trimmed = note.trim();
-    if (!member || (!photo && !(already && trimmed))) return;
+    if (!member) return;
     setBusy(true);
     try {
       let photoStorageId: Id<"_storage"> | undefined;
@@ -73,7 +70,7 @@ export default function CheckIn() {
         memberId: member._id,
         source: "app",
         photoStorageId,
-        note: trimmed || undefined,
+        note: note.trim() || undefined,
       });
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setDone(true);
@@ -111,11 +108,11 @@ export default function CheckIn() {
       footer={
         <Button
           testID="checkin-submit"
-          label={already ? "Save" : photo ? "Check in" : "Add a photo to check in"}
-          icon={photo || already ? "checkmark" : "camera.fill"}
+          label="Check in"
+          icon="checkmark"
           haptic
           loading={busy}
-          disabled={!member || feed === undefined || (!photo && !(already && note.trim()))}
+          disabled={!member}
           onPress={submit}
         />
       }
@@ -153,7 +150,7 @@ export default function CheckIn() {
           </Pressable>
         </View>
       ) : (
-        <Placeholder height={220} icon="camera.fill" label={already ? "Swap your photo (optional)" : "Snap proof. A photo is required."} tint="amber" />
+        <Placeholder height={220} icon="camera.fill" label="Add a photo (optional)" tint="amber" />
       )}
 
       <View style={{ flexDirection: "row", gap: spacing.md, marginTop: spacing.md }}>
