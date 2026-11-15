@@ -6,7 +6,8 @@ import { useState } from "react";
 import { Alert, Image, Pressable, View } from "react-native";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
-import { PopIn, Sticker } from "../components/fun";
+import { Drizzle } from "../components/characters";
+import { Sticker } from "../components/fun";
 import { Button, Icon, Input, Placeholder, Screen, Text } from "../components/ui";
 import { useCurrentMember } from "../lib/session";
 import { colors, radius, spacing } from "../lib/theme";
@@ -85,9 +86,7 @@ export default function CheckIn() {
     return (
       <Screen edges={["left", "right", "bottom"]} background={colors.accentSoft}>
         <View testID="checkin-success" style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: spacing.md }}>
-          <PopIn>
-            <Icon name="checkmark.circle.fill" size={120} color={colors.mint} weight="bold" />
-          </PopIn>
+          <Drizzle size={220} mood="pumped" />
           <Text variant="display" align="center">
             Checked in!
           </Text>

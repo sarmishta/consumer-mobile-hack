@@ -2,8 +2,9 @@ import { router } from "expo-router";
 import { View } from "react-native";
 import type { Id } from "../../../convex/_generated/dataModel";
 import { colors, gradients, spacing } from "../../lib/theme";
+import { Drizzle } from "../characters";
 import { GradientCard, Sticker } from "../fun";
-import { Avatar, Button, Icon, Text } from "../ui";
+import { Avatar, Button, Text } from "../ui";
 import { formatDay } from "./format";
 
 export function RaincheckCard({
@@ -23,7 +24,7 @@ export function RaincheckCard({
             Rain on {formatDay(raincheck.day)}
           </Text>
         </View>
-        <Icon name="umbrella.fill" size={30} color={colors.white} />
+        <Drizzle size={84} mood="sheepish" animated={false} style={{ margin: -16 }} />
       </View>
       <Sticker label={raincheck.plan} color={colors.accent} tilt={-4} />
       <Button

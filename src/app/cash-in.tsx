@@ -7,7 +7,8 @@ import { Image, Pressable, View } from "react-native";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { formatDay } from "../components/crew/format";
-import { AnimatedEmoji, PopIn, Sticker } from "../components/fun";
+import { Drizzle } from "../components/characters";
+import { Sticker } from "../components/fun";
 import { Avatar, Button, Placeholder, Screen, Text } from "../components/ui";
 import { colors, radius, spacing } from "../lib/theme";
 
@@ -55,11 +56,7 @@ export default function CashIn() {
         background={colors.accentSoft}
         style={{ justifyContent: "center", alignItems: "center", gap: spacing.lg }}
       >
-        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-          <PopIn tilt={-10}>
-            <AnimatedEmoji name="party" size={140} />
-          </PopIn>
-        </View>
+        <Drizzle size={230} mood="party" />
         <Text variant="display" align="center">
           Raincheck cashed.
         </Text>

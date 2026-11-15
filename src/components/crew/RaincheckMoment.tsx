@@ -1,6 +1,7 @@
 import { View } from "react-native";
 import { colors, spacing } from "../../lib/theme";
-import { AnimatedEmoji, PopIn, Sticker } from "../fun";
+import { Drizzle } from "../characters";
+import { PopIn, Sticker } from "../fun";
 import { Button, Text } from "../ui";
 
 export type RaincheckMomentData = {
@@ -15,15 +16,15 @@ export function RaincheckMoment({ data, onClose }: { data: RaincheckMomentData; 
       <PopIn
         tilt={-6}
         style={{
-          width: 132,
-          height: 132,
-          borderRadius: 66,
+          width: 150,
+          height: 150,
+          borderRadius: 75,
           backgroundColor: clean ? colors.grapeSoft : colors.coralSoft,
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <AnimatedEmoji name={clean ? "moon" : "umbrella"} size={96} />
+        <Drizzle size={170} mood={clean ? "happy" : "sheepish"} />
       </PopIn>
       {data.mine ? (
         <>

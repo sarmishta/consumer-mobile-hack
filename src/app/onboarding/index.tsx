@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import { View } from "react-native";
-import { AnimatedEmoji, PopIn, Sticker } from "../../components/fun";
+import { Drizzle, Luna } from "../../components/characters";
+import { Sticker } from "../../components/fun";
 import { Button, Screen, Text } from "../../components/ui";
 import { colors, spacing } from "../../lib/theme";
 
@@ -16,13 +17,16 @@ export default function Splash() {
       }
     >
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingBottom: 120 }}>
-        <PopIn style={{ marginBottom: spacing.xl }}>
-          <AnimatedEmoji name="rain" size={150} />
-        </PopIn>
+        <Drizzle size={230} mood="wave" style={{ marginBottom: -spacing.lg }} />
         <Text variant="display" align="center" style={{ fontSize: 60, lineHeight: 66 }}>
           RAINCHECK
         </Text>
-        <Sticker label="Bad days, good nights." color={colors.coral} ink={colors.white} tilt={-4} delay={200} style={{ alignSelf: "center", marginTop: spacing.sm }} />
+        <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.xs, marginTop: spacing.sm }}>
+          <Sticker label="Bad days, good nights." color={colors.coral} ink={colors.white} tilt={-4} delay={200} />
+          <View style={{ backgroundColor: colors.label, borderRadius: 28, padding: 4 }}>
+            <Luna size={48} mood="happy" />
+          </View>
+        </View>
         <Text variant="callout" weight="600" color={colors.secondaryLabel} align="center" style={{ marginTop: spacing.xl, maxWidth: 280 }}>
           Everyone picks a daily goal. Miss a day and you owe your crew.
         </Text>

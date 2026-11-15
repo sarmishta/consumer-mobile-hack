@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Animated, View } from "react-native";
 import { api } from "../../../convex/_generated/api";
 import { KINDS, NUDGE_TIMES } from "../../components/onboarding/options";
-import { FallingRaindrop } from "../../components/onboarding/Raindrop";
+import { Drizzle } from "../../components/characters";
 import { useOnboarding } from "../../components/onboarding/store";
 import { Button, Icon, Screen, Text } from "../../components/ui";
 import { useSession } from "../../lib/session";
@@ -79,7 +79,7 @@ export default function MakingYourCrew() {
   return (
     <Screen background={colors.rainSoft}>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: spacing.xxl }}>
-        <FallingRaindrop />
+        <Drizzle size={220} mood={error ? "sheepish" : "pumped"} />
         <Text variant="largeTitle" align="center">
           {error ? "Hit a puddle." : "Making your crew…"}
         </Text>

@@ -1,7 +1,8 @@
 import { router } from "expo-router";
 import { Image, View } from "react-native";
 import { colors, gradients, radius, spacing } from "../../lib/theme";
-import { AnimatedEmoji, GradientCard, Sticker } from "../fun";
+import { Drizzle, Flame } from "../characters";
+import { GradientCard, Sticker } from "../fun";
 import { Button, Text } from "../ui";
 import type { FeedEntry } from "./FeedItem";
 
@@ -19,29 +20,19 @@ export function GoalCard({
   return (
     <GradientCard colors={gradients.rain}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.md }}>
-        <View
-          style={{
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-            backgroundColor: "rgba(255,255,255,0.22)",
-            alignItems: "center",
-            justifyContent: "center",
-            transform: [{ rotate: "-6deg" }],
-          }}
-        >
-          <Text style={{ fontSize: 32, lineHeight: 40 }}>{emoji ?? "🎯"}</Text>
-        </View>
+        <Drizzle size={96} mood={mine ? "happy" : "sleepy"} style={{ margin: -14 }} />
         <View style={{ flex: 1 }}>
           <Text variant="caption" color="rgba(255,255,255,0.8)" weight="800" style={{ letterSpacing: 0.8 }}>
             MY GOAL
           </Text>
           <Text variant="title2" color={colors.white} numberOfLines={2}>
-            {goal ?? "Pick a goal"}
+            {goal ? (emoji ? emoji + " " : "") + goal : "Pick a goal"}
           </Text>
         </View>
         <View style={{ alignItems: "center" }}>
-          {streak > 0 ? <AnimatedEmoji name="fire" size={44} /> : <Text style={{ fontSize: 30, lineHeight: 44, opacity: 0.5 }}>🔥</Text>}
+          <View style={{ opacity: streak > 0 ? 1 : 0.45 }}>
+            <Flame size={40} face={streak > 0} />
+          </View>
           <Text variant="largeTitle" color={colors.white} style={{ fontSize: 30, lineHeight: 32 }}>
             {streak}
           </Text>

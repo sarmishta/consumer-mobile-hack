@@ -11,6 +11,7 @@ import { Sheet } from "../../components/crew/Sheet";
 import { formatDay } from "../../components/crew/format";
 import { StakePicker } from "../../components/onboarding/StakePicker";
 import type { StakeKind } from "../../components/onboarding/options";
+import { Flame } from "../../components/characters";
 import { Sticker } from "../../components/fun";
 import { Avatar, Button, Icon, LargeTitle, Row, Screen, Section, Text } from "../../components/ui";
 import { useCurrentMember } from "../../lib/session";
@@ -78,7 +79,9 @@ export default function Crew() {
                   paddingVertical: spacing.xxs,
                 }}
               >
-                <Icon name="flame.fill" size={14} color={person.streak > 0 ? colors.accentInk : colors.tertiaryLabel} />
+                <View style={{ opacity: person.streak > 0 ? 1 : 0.4 }}>
+                  <Flame size={16} />
+                </View>
                 <Text variant="headline" weight="800" color={person.streak > 0 ? colors.accentInk : colors.tertiaryLabel}>
                   {person.streak}
                 </Text>

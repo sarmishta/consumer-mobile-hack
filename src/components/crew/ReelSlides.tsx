@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 import { Image, View } from "react-native";
 import type { api } from "../../../convex/_generated/api";
 import { colors, gradients, radius, spacing } from "../../lib/theme";
-import { AnimatedEmoji, PopIn, Sticker } from "../fun";
+import { Luna } from "../characters";
+import { PopIn, Sticker } from "../fun";
 import { Avatar, Icon, Text } from "../ui";
 import { weekdayLetter } from "./format";
 
@@ -136,7 +137,7 @@ export function buildSlides(week: Week): Slide[] {
     gradient: gradients.night,
     content: (
       <View style={{ gap: spacing.lg, alignItems: "center" }}>
-        <AnimatedEmoji name="moon" size={130} />
+        <Luna size={170} mood="wink" animated={false} />
         <Text variant="display" color={colors.white} align="center">
           Bad days, good nights.
         </Text>

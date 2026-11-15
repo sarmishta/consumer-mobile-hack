@@ -1,5 +1,4 @@
 import { LinearGradient } from "expo-linear-gradient";
-import LottieView from "lottie-react-native";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
@@ -15,31 +14,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { colors, gradients, radius, spacing, type } from "../lib/theme";
-
-const EMOJI = {
-  fire: require("../../assets/emoji/fire.json"),
-  umbrella: require("../../assets/emoji/umbrella.json"),
-  party: require("../../assets/emoji/party.json"),
-  moon: require("../../assets/emoji/moon.json"),
-  rain: require("../../assets/emoji/rain.json"),
-};
-
-export type EmojiName = keyof typeof EMOJI;
-
-/** Noto Animated Emoji (Lottie, CC BY 4.0). Loops by default. */
-export function AnimatedEmoji({
-  name,
-  size = 48,
-  loop = true,
-  style,
-}: {
-  name: EmojiName;
-  size?: number;
-  loop?: boolean;
-  style?: StyleProp<ViewStyle>;
-}) {
-  return <LottieView source={EMOJI[name]} autoPlay loop={loop} style={[{ width: size, height: size }, style]} />;
-}
 
 /** Springs its children in from small with an optional tilt and delay. */
 export function PopIn({

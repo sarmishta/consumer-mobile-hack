@@ -19,7 +19,6 @@
     "expo-sharing": "~58.0.23",
     "expo-status-bar": "~58.0.5",
     "expo-symbols": "~58.0.5",
-    "lottie-react-native": "~7.5.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-native": "0.88.1",
