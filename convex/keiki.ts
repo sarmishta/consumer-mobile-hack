@@ -2,8 +2,6 @@ import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { recordCheckIn } from "./checkins";
 
-export const PHOTO_REQUIRED_REPLY = "Send a photo to make it count 📸";
-
 export function normalizePhone(raw: string): string | null {
   const digits = raw.replace(/\D/g, "");
   if (digits.length === 10) return `+1${digits}`;

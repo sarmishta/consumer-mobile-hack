@@ -1,6 +1,6 @@
 # Keiki text check-in endpoint
 
-Keiki (the SMS/iMessage agent) calls this when someone replies to a nudge. Every inbound message **with a photo** counts as a check-in for that person's current day, stored with `source: 'text'`, so it shows up live in the app. A person can be in several crews; one text checks them in to every crew they belong to (one check-in per crew, each crew's feed shows it "via text").
+Keiki (the SMS/iMessage agent) calls this when someone replies to a nudge. Every inbound message counts as a check-in for that person's current day, stored with `source: 'text'`, so it shows up live in the app. A person can be in several crews; one text checks them in to every crew they belong to (one check-in per crew, each crew's feed shows it "via text").
 
 ## URL
 
@@ -30,7 +30,7 @@ Note the `.convex.site` host (HTTP actions), not `.convex.cloud`. Locally it is 
 
 - `phone` (required): any common format. It is normalized to E.164 the way onboarding stores it: 10 digits get `+1`, 11 digits starting with 1 get `+`, and an explicit `+` number keeps its digits.
 - `text` (optional): stored as the check-in note, trimmed, max 280 chars.
-- `mediaUrl` (required for a check-in): fetched by the backend and stored as the check-in photo. It must be publicly fetchable (or pre-signed). If it is missing or the fetch fails, nothing is recorded and the response is `photo_required` (below).
+- `mediaUrl` (optional): fetched by the backend and stored as the check-in photo. It must be publicly fetchable (or pre-signed). If the fetch fails, the check-in still goes through without a photo.
 - `messageId` (optional): accepted for Keiki's own logging; not stored.
 
 The person is looked up by phone, then every crew membership they have. Each crew is checked in for its own `currentDay`. A second message on the same day does not double count: that crew's result says `alreadyCheckedIn: true` and only fills in a note or photo the first check-in lacked.
@@ -53,14 +53,6 @@ The person is looked up by phone, then every crew membership they have. Each cre
 ```
 
 `replyText` is ready to text back. With one crew it reads like before (`Logged. 3-day streak. Bad days, good nights.` / `Already logged today. 3-day streak, still going.`). Top-level `alreadyCheckedIn` is `true` only when every crew was already checked in (kept for backwards compatibility). Top-level `day` and `goal` come from the most recently joined crew. `goal` and `name` are `null` when unset.
-
-## Response 200, no photo
-
-```json
-{ "ok": false, "error": "photo_required", "replyText": "Send a photo to make it count 📸" }
-```
-
-Returned when `mediaUrl` is missing or can't be fetched. No check-in is recorded; text `replyText` back. Auth, 400 and 404 checks run first, so an unknown phone still gets 404.
 
 ## Errors
 
@@ -89,7 +81,7 @@ curl -s -X POST "$SITE/checkin" \
 curl -s -X POST "$SITE/checkin" \
   -H "Authorization: Bearer $KEIKI_SHARED_SECRET" \
   -H 'Content-Type: application/json' \
-  -d '{"phone":"+14155550142","text":"done"}'   # -> photo_required
+  -d '{"phone":"+14155550142","mediaUrl":"https://example.com/photo.jpg"}'
 ```
 
 ## Setting the secret

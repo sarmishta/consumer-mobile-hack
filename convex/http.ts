@@ -2,7 +2,7 @@ import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
-import { normalizePhone, PHOTO_REQUIRED_REPLY, replyForCrews, secretsMatch } from "./keiki";
+import { normalizePhone, replyForCrews, secretsMatch } from "./keiki";
 
 declare const process: { env: Record<string, string | undefined> };
 
@@ -40,16 +40,14 @@ http.route({
     const found = await ctx.runQuery(internal.keiki.memberByPhone, { phone: e164 });
     if (found.status !== "ok") return json(404, { ok: false, error: found.status });
 
-    const photoRequired = () =>
-      json(200, { ok: false, error: "photo_required", replyText: PHOTO_REQUIRED_REPLY });
-    if (typeof mediaUrl !== "string" || !mediaUrl.trim()) return photoRequired();
-    let photoStorageId: Id<"_storage">;
-    try {
-      const res = await fetch(mediaUrl);
-      if (!res.ok) return photoRequired();
-      photoStorageId = await ctx.storage.store(await res.blob());
-    } catch {
-      return photoRequired();
+    let photoStorageId: Id<"_storage"> | undefined;
+    if (typeof mediaUrl === "string" && mediaUrl) {
+      try {
+        const res = await fetch(mediaUrl);
+        if (res.ok) photoStorageId = await ctx.storage.store(await res.blob());
+      } catch {
+        photoStorageId = undefined;
+      }
     }
 
     const { name, results } = await ctx.runMutation(internal.keiki.recordTextCheckins, {
