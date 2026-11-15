@@ -9,6 +9,7 @@
  */
 
 import type * as checkins from "../checkins.js";
+import type * as crew from "../crew.js";
 import type * as feed from "../feed.js";
 import type * as files from "../files.js";
 import type * as groups from "../groups.js";
@@ -17,6 +18,7 @@ import type * as keiki from "../keiki.js";
 import type * as members from "../members.js";
 import type * as profile from "../profile.js";
 import type * as rainchecks from "../rainchecks.js";
+import type * as reel from "../reel.js";
 import type * as users from "../users.js";
 
 import type {
@@ -27,6 +29,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   checkins: typeof checkins;
+  crew: typeof crew;
   feed: typeof feed;
   files: typeof files;
   groups: typeof groups;
@@ -35,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   members: typeof members;
   profile: typeof profile;
   rainchecks: typeof rainchecks;
+  reel: typeof reel;
   users: typeof users;
 }>;
 

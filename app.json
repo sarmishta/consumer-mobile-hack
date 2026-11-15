@@ -33,7 +33,8 @@
           "cameraPermission": "RAINCHECK uses your camera so you can snap check-in and hangout pictures for your crew."
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-sharing"
     ],
     "backgroundColor": "#F2F2F7"
   }
