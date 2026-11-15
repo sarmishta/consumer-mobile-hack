@@ -1,0 +1,5 @@
+.env*
+.agents
+.claude
+ios
+android
