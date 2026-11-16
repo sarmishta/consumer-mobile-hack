@@ -184,7 +184,7 @@ export default function Crew() {
             <Text variant="largeTitle" color={colors.white} style={{ fontSize: 30, lineHeight: 36 }}>
               Sunday Reel
             </Text>
-            <Text variant="subhead" weight="600" color="rgba(255,255,255,0.8)">
+            <Text variant="subhead" weight="600" color={colors.onColor}>
               Your crew&apos;s week, story style
             </Text>
           </View>

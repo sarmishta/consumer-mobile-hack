@@ -5,9 +5,9 @@ import type { EyeKind } from "./shared";
 
 export type DrizzleMood = "happy" | "sleepy" | "pumped" | "sheepish" | "party" | "wave";
 
-const BLUE = "#63B0FF";
-const BLUE_LIGHT = "#8ECBFF";
-const BLUE_DEEP = "#3A82E6";
+const BLUE = "#A9C6DC";
+const BLUE_LIGHT = "#C9DDEB";
+const BLUE_DEEP = "#7E9FBA";
 const BODY = "M74 15 C66 34 20 42 20 74 C20 96 38 110 60 110 C82 110 100 96 100 74 C100 54 80 42 74 15 Z";
 const BELLY = "M68 43 C60 53 32 59 32 77 C32 92 44 102 60 102 C76 102 88 92 88 77 C88 63 74 55 68 43 Z";
 
@@ -30,12 +30,12 @@ const EYES: Record<DrizzleMood, EyeKind> = {
 };
 
 const CONFETTI: [number, number, number, string][] = [
-  [8, 14, 20, "#FF6B5B"],
-  [100, 4, -30, "#FFC233"],
-  [116, 30, 40, "#7B5CFF"],
-  [-2, 62, -15, "#1FC98E"],
-  [122, 84, 25, "#FF6B5B"],
-  [84, -6, 10, "#1FC98E"],
+  [8, 14, 20, "#E46B5A"],
+  [100, 4, -30, "#F2B27E"],
+  [116, 30, 40, "#E8744F"],
+  [-2, 62, -15, "#7FAF8A"],
+  [122, 84, 25, "#E46B5A"],
+  [84, -6, 10, "#7FAF8A"],
 ];
 
 function Arm({ d }: { d: string }) {
@@ -52,7 +52,7 @@ function Mouth({ mood }: { mood: DrizzleMood }) {
     return (
       <G>
         <Path d="M50 78 Q60 80 70 78 Q69 92 60 92 Q51 92 50 78 Z" fill="#4A2231" {...outline} strokeWidth={3.2} />
-        <Ellipse cx={60} cy={88.5} rx={4.6} ry={2.4} fill="#FF8C9A" />
+        <Ellipse cx={60} cy={88.5} rx={4.6} ry={2.4} fill="#F0A08E" />
       </G>
     );
   }
@@ -131,14 +131,14 @@ export function Drizzle({
         {mood === "pumped" ? (
           <G>
             <Path d="M20 26 l-6 -7 M10 34 l-9 -2 M100 26 l6 -7 M110 34 l9 -2" fill="none" {...outline} strokeWidth={3.4} />
-            <Path d={sparklePath(8)} fill="#FFD45C" {...outline} strokeWidth={2.6} transform="translate(98 2)" />
-            <Path d={sparklePath(5.5)} fill="#FFD45C" {...outline} strokeWidth={2.4} transform="translate(24 4)" />
+            <Path d={sparklePath(8)} fill="#F7C48E" {...outline} strokeWidth={2.6} transform="translate(98 2)" />
+            <Path d={sparklePath(5.5)} fill="#F7C48E" {...outline} strokeWidth={2.4} transform="translate(24 4)" />
           </G>
         ) : null}
 
         {mood === "sheepish" ? (
           <G>
-            <Path d={dropPath(5)} fill="#DDF1FF" {...outline} strokeWidth={2.8} transform="translate(30 36) rotate(-18)" />
+            <Path d={dropPath(5)} fill="#E9F1F7" {...outline} strokeWidth={2.8} transform="translate(30 36) rotate(-18)" />
             <G transform="translate(104 27) rotate(13)">
               <UmbrellaShape />
             </G>
@@ -148,9 +148,9 @@ export function Drizzle({
 
         {mood === "party" ? (
           <G transform="translate(41 42) rotate(-36)">
-            <Path d="M-13 0 L1 -27 L13 0 Z" fill="#FF6B5B" {...outline} strokeWidth={3.8} />
-            <Path d="M-7 -8 L7 -4 M-2 -18 L5 -15" fill="none" stroke="#FFD45C" strokeWidth={3} strokeLinecap="round" />
-            <Circle cx={1} cy={-28} r={4.6} fill="#FFD45C" {...outline} strokeWidth={3} />
+            <Path d="M-13 0 L1 -27 L13 0 Z" fill="#E46B5A" {...outline} strokeWidth={3.8} />
+            <Path d="M-7 -8 L7 -4 M-2 -18 L5 -15" fill="none" stroke="#F7C48E" strokeWidth={3} strokeLinecap="round" />
+            <Circle cx={1} cy={-28} r={4.6} fill="#F7C48E" {...outline} strokeWidth={3} />
           </G>
         ) : null}
 

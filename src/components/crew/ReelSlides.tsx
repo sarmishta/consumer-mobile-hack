@@ -12,7 +12,7 @@ type Week = NonNullable<FunctionReturnType<typeof api.reel.week>>;
 type Stops = readonly [string, string, ...string[]];
 export type Slide = { key: string; background: string; gradient: Stops; content: ReactNode };
 
-const WHITE_SOFT = "rgba(255,255,255,0.82)";
+const WHITE_SOFT = colors.onColor;
 const PERSON_GRADIENTS = [gradients.coral, gradients.rain, gradients.mint, gradients.sunrise] as const;
 
 function Big({ value, label, delay = 0 }: { value: string | number; label: string; delay?: number }) {
@@ -72,7 +72,7 @@ export function buildSlides(week: Week): Slide[] {
                     width: 34,
                     height: 34,
                     borderRadius: 17,
-                    backgroundColor: person.done[i] ? colors.white : "rgba(255,255,255,0.25)",
+                    backgroundColor: person.done[i] ? colors.white : colors.onColorFaint,
                     alignItems: "center",
                     justifyContent: "center",
                   }}

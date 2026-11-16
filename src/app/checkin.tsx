@@ -140,7 +140,7 @@ export default function CheckIn() {
               position: "absolute",
               top: spacing.sm,
               right: spacing.sm,
-              backgroundColor: "rgba(0,0,0,0.45)",
+              backgroundColor: colors.scrim,
               borderRadius: radius.pill,
               padding: spacing.xs,
             }}

@@ -89,7 +89,7 @@ export default function Invite() {
             {code}
           </Text>
         </View>
-        <Text variant="caption" color="rgba(255,255,255,0.85)" numberOfLines={1}>
+        <Text variant="caption" color={colors.onColor} numberOfLines={1}>
           {link}
         </Text>
         <Button
