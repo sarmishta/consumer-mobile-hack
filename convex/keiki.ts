@@ -1,5 +1,6 @@
 import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
+import { recordCheckIn } from "./checkins";
 
 export function normalizePhone(raw: string): string | null {
   const digits = raw.replace(/\D/g, "");
@@ -28,6 +29,16 @@ export function replyFor(alreadyCheckedIn: boolean, streak: number): string {
   return `Logged. ${days}. Bad days, good nights.`;
 }
 
+export function replyForCrews(results: { groupName: string; alreadyCheckedIn: boolean; streak: number }[]): string {
+  if (results.length === 1) return replyFor(results[0].alreadyCheckedIn, results[0].streak);
+  if (results.every((r) => r.alreadyCheckedIn)) return `Already logged today in all ${results.length} crews.`;
+  const parts = results.map((r) => {
+    const days = r.streak === 1 ? "day one" : `${r.streak}-day streak`;
+    return `${r.groupName} (${r.alreadyCheckedIn ? "already in" : days})`;
+  });
+  return `Logged for ${parts.join(", ")}. Bad days, good nights.`;
+}
+
 export const memberByPhone = internalQuery({
   args: { phone: v.string() },
   handler: async (ctx, args) => {
@@ -43,17 +54,44 @@ export const memberByPhone = internalQuery({
       .order("desc")
       .first();
     if (!member) return { status: "no_group" as const };
-    return { status: "ok" as const, memberId: member._id };
+    return { status: "ok" as const, memberId: member._id, userId: user._id };
   },
 });
 
-export const checkinSummary = internalQuery({
-  args: { memberId: v.id("members") },
+export const recordTextCheckins = internalMutation({
+  args: {
+    userId: v.id("users"),
+    note: v.optional(v.string()),
+    photoStorageId: v.optional(v.id("_storage")),
+  },
   handler: async (ctx, args) => {
-    const member = await ctx.db.get("members", args.memberId);
-    if (!member) return null;
-    const user = await ctx.db.get("users", member.userId);
-    return { name: user?.name ?? null, goal: member.goal ?? null, streak: member.streak };
+    const user = await ctx.db.get("users", args.userId);
+    const members = await ctx.db
+      .query("members")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .order("desc")
+      .take(20);
+    const results = [];
+    for (const member of members) {
+      const group = await ctx.db.get("groups", member.groupId);
+      if (!group) continue;
+      const result = await recordCheckIn(ctx, {
+        memberId: member._id,
+        source: "text",
+        note: args.note,
+        photoStorageId: args.photoStorageId,
+      });
+      const updated = await ctx.db.get("members", member._id);
+      results.push({
+        group: { id: group._id, name: group.name },
+        memberId: member._id,
+        alreadyCheckedIn: result.alreadyCheckedIn,
+        day: result.day,
+        goal: member.goal ?? null,
+        streak: updated?.streak ?? member.streak,
+      });
+    }
+    return { name: user?.name ?? null, results };
   },
 });
 
