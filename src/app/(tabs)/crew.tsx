@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "convex/react";
 import { router } from "expo-router";
 import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { Alert, Pressable, Share, View } from "react-native";
+import { Alert, Platform, Pressable, Share, View } from "react-native";
 import { api } from "../../../convex/_generated/api";
 import { EndDayConfirm } from "../../components/crew/EndDayConfirm";
 import { RaincheckCard } from "../../components/crew/RaincheckCard";
@@ -98,7 +98,12 @@ export default function Crew() {
           value={group.name}
           icon="pencil"
           iconColor={colors.grape}
-          onPress={() =>
+          onPress={() => {
+            if (Platform.OS === "web") {
+              const name = globalThis.prompt?.("Rename crew", group.name);
+              if (name?.trim()) renameCrew({ groupId: group._id, name });
+              return;
+            }
             Alert.prompt(
               "Rename crew",
               undefined,
@@ -107,8 +112,8 @@ export default function Crew() {
               },
               "plain-text",
               group.name,
-            )
-          }
+            );
+          }}
         />
         <Row
           testID="edit-stake"
