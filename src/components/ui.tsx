@@ -165,7 +165,7 @@ export function Screen({
   }, [scroll, footer]);
   return (
     <SafeAreaView edges={edges} style={{ flex: 1, backgroundColor: background }}>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
+      <KeyboardAvoidingView enabled={Platform.OS !== "web"} behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
           {scroll ? (
             <ScrollView
@@ -177,6 +177,8 @@ export function Screen({
             >
               {children}
             </ScrollView>
+          ) : Platform.OS === "web" ? (
+            <View style={[{ flex: 1 }, pad, style]}>{children}</View>
           ) : (
             <Pressable accessible={false} onPress={Keyboard.dismiss} style={[{ flex: 1 }, pad, style]}>
               {children}
