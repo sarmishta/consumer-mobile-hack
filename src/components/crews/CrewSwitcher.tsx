@@ -55,7 +55,7 @@ export function CrewSwitcherSheet() {
           <Button testID="crew-switcher-close" label="Done" variant="plain" small onPress={() => setOpen(false)} />
         </View>
         <ScrollView contentContainerStyle={{ paddingBottom: spacing.huge }}>
-          <Section>
+          <Section style={{ marginHorizontal: spacing.lg }}>
             {(crews ?? []).map(({ group: g, people }) => (
               <Row
                 key={g._id}

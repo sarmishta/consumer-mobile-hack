@@ -55,7 +55,7 @@ export default function Home() {
         <CrewRow members={board.members} selected={selected} onSelect={setSelected} />
       </View>
 
-      <GoalCard emoji={me?.emoji ?? null} goal={me?.goal ?? null} streak={me?.streak ?? member.streak} mine={mine} />
+      <GoalCard memberId={member._id} emoji={me?.emoji ?? null} goal={me?.goal ?? null} streak={me?.streak ?? member.streak} mine={mine} />
 
       <View style={{ flexDirection: "row", alignItems: "center", marginTop: spacing.xxl, marginBottom: spacing.sm }}>
         <Text variant="largeTitle" style={{ flex: 1, fontSize: 28, lineHeight: 34 }}>

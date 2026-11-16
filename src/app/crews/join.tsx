@@ -69,7 +69,7 @@ export default function JoinCrew() {
           <Text variant="callout" color={colors.secondaryLabel} style={{ marginTop: spacing.xs, marginBottom: spacing.xl }}>
             What&apos;s your goal for this crew?
           </Text>
-          <GoalPicker value={goal} onChange={setGoal} />
+          <GoalPicker key="goal" value={goal} onChange={setGoal} />
         </>
       ) : (
         <>
@@ -79,6 +79,7 @@ export default function JoinCrew() {
           </Text>
           <View style={{ marginTop: spacing.xxl }}>
             <Input
+              key="code"
               testID="join-crew-code"
               value={code}
               onChangeText={(text) => setCode(text.replace(/[^a-z0-9]/gi, "").toUpperCase().slice(0, 6))}
@@ -87,7 +88,7 @@ export default function JoinCrew() {
               autoCorrect={false}
               autoFocus
               maxLength={6}
-              style={{ fontSize: 32, fontWeight: "700", letterSpacing: 8, textAlign: "center" }}
+              style={{ height: 64, fontSize: 32, lineHeight: 38, fontWeight: "700", letterSpacing: 8, textAlign: "center" }}
             />
           </View>
         </>

@@ -14,7 +14,6 @@ export function GoalPicker({ value, onChange }: { value: CrewGoal; onChange: (go
           key={type}
           testID={`crew-goal-${testIdSlug(type)}`}
           label={GOAL_DEFAULTS[type].label}
-          emoji={GOAL_DEFAULTS[type].emoji}
           selected={value.goalType === type}
           onPress={() => onChange({ goalType: type, goal: GOAL_DEFAULTS[type].goal, emoji: GOAL_DEFAULTS[type].emoji })}
         />
