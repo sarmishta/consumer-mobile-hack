@@ -1,5 +1,6 @@
 import { useQuery } from "convex/react";
 import * as SecureStore from "expo-secure-store";
+import { Platform } from "react-native";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { api } from "../../convex/_generated/api";
@@ -16,6 +17,15 @@ type Session = {
   setActiveGroupId: (id: Id<"groups"> | null) => Promise<void>;
 };
 
+const store =
+  Platform.OS === "web"
+    ? {
+        getItemAsync: async (key: string) => globalThis.localStorage?.getItem(key) ?? null,
+        setItemAsync: async (key: string, value: string) => globalThis.localStorage?.setItem(key, value),
+        deleteItemAsync: async (key: string) => globalThis.localStorage?.removeItem(key),
+      }
+    : SecureStore;
+
 const SessionContext = createContext<Session | null>(null);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
@@ -24,7 +34,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [activeGroupId, setActiveGroupIdState] = useState<Id<"groups"> | null>(null);
 
   useEffect(() => {
-    Promise.all([SecureStore.getItemAsync(KEY), SecureStore.getItemAsync(ACTIVE_KEY)])
+    Promise.all([store.getItemAsync(KEY), store.getItemAsync(ACTIVE_KEY)])
       .then(([value, active]) => {
         setUserIdState(value as Id<"users"> | null);
         setActiveGroupIdState(active as Id<"groups"> | null);
@@ -36,8 +46,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const setUserId = useCallback(async (id: Id<"users"> | null) => {
     setUserIdState(id);
     try {
-      if (id) await SecureStore.setItemAsync(KEY, id);
-      else await SecureStore.deleteItemAsync(KEY);
+      if (id) await store.setItemAsync(KEY, id);
+      else await store.deleteItemAsync(KEY);
     } catch (error) {
       console.warn("Could not persist session to SecureStore", error);
     }
@@ -46,8 +56,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const setActiveGroupId = useCallback(async (id: Id<"groups"> | null) => {
     setActiveGroupIdState(id);
     try {
-      if (id) await SecureStore.setItemAsync(ACTIVE_KEY, id);
-      else await SecureStore.deleteItemAsync(ACTIVE_KEY);
+      if (id) await store.setItemAsync(ACTIVE_KEY, id);
+      else await store.deleteItemAsync(ACTIVE_KEY);
     } catch (error) {
       console.warn("Could not persist active crew to SecureStore", error);
     }

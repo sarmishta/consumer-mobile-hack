@@ -4,7 +4,7 @@ import * as Sharing from "expo-sharing";
 import { router } from "expo-router";
 import { useRef, useState } from "react";
 import type { ComponentRef } from "react";
-import { Alert, Pressable, View } from "react-native";
+import { Alert, Platform, Pressable, View } from "react-native";
 import Animated, { SlideInLeft, SlideInRight } from "react-native-reanimated";
 import { captureRef } from "react-native-view-shot";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -123,7 +123,9 @@ export default function Reel() {
       </View>
 
       <View style={{ padding: spacing.lg, backgroundColor: slide?.background ?? colors.grape }}>
-        <Button testID="reel-share" label="Share to Stories" icon="square.and.arrow.up" style={{ backgroundColor: colors.white, borderBottomColor: "rgba(0,0,0,0.12)" }} loading={sharing} disabled={!slide} onPress={share} />
+        {Platform.OS !== "web" && (
+          <Button testID="reel-share" label="Share to Stories" icon="square.and.arrow.up" style={{ backgroundColor: colors.white, borderBottomColor: "rgba(0,0,0,0.12)" }} loading={sharing} disabled={!slide} onPress={share} />
+        )}
       </View>
     </SafeAreaView>
   );

@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
+    "@convex-dev/static-hosting": "^0.2.2",
     "@expo-google-fonts/lilita-one": "^0.4.1",
+    "@expo/vector-icons": "^15.0.2",
     "convex": "^1.50.0",
     "expo": "~58.0.25",
     "expo-blur": "~58.0.6",
@@ -27,6 +29,7 @@
     "react-native-screens": "~4.30.1",
     "react-native-svg": "15.16.0",
     "react-native-view-shot": "6.1.1",
+    "react-native-web": "^0.21.4",
     "react-native-worklets": "0.13.0"
   },
   "devDependencies": {

@@ -1,3 +1,6 @@
+import { Platform } from "react-native";
+import type { TextStyle } from "react-native";
+
 /** Vivid light social-camera design tokens. Import from "@/lib/theme" or a relative path. */
 export const colors = {
   /** Warm cream screen background. */
@@ -44,13 +47,18 @@ export const gradients = {
 } as const satisfies Record<string, readonly [string, string, ...string[]]>;
 
 /** Font faces. Avenir Next ships with iOS; Lilita One loads through @expo-google-fonts in the root layout. */
-export const fonts = {
-  display: "LilitaOne_400Regular",
-  heavy: "AvenirNext-Heavy",
-  bold: "AvenirNext-Bold",
-  demi: "AvenirNext-DemiBold",
-  medium: "AvenirNext-Medium",
-};
+const WEB_SANS = '"Avenir Next", Avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+
+export const fonts =
+  Platform.OS === "web"
+    ? { display: "LilitaOne_400Regular", heavy: WEB_SANS, bold: WEB_SANS, demi: WEB_SANS, medium: WEB_SANS }
+    : {
+        display: "LilitaOne_400Regular",
+        heavy: "AvenirNext-Heavy",
+        bold: "AvenirNext-Bold",
+        demi: "AvenirNext-DemiBold",
+        medium: "AvenirNext-Medium",
+      };
 
 /** Avenir Next face for a numeric weight. */
 export function fontForWeight(weight: string | number | undefined) {
@@ -62,18 +70,20 @@ export function fontForWeight(weight: string | number | undefined) {
 }
 
 /** Chunky social type scale: Lilita One for display and stickers, Avenir Next for UI. */
+const webWeight = (fontWeight: TextStyle["fontWeight"]): TextStyle => (Platform.OS === "web" ? { fontWeight } : {});
+
 export const type = {
   display: { fontSize: 52, lineHeight: 58, fontFamily: fonts.display },
   largeTitle: { fontSize: 38, lineHeight: 44, fontFamily: fonts.display },
-  title1: { fontSize: 30, lineHeight: 36, fontFamily: fonts.heavy },
-  title2: { fontSize: 23, lineHeight: 29, fontFamily: fonts.heavy },
-  title3: { fontSize: 20, lineHeight: 26, fontFamily: fonts.bold },
-  headline: { fontSize: 17, lineHeight: 22, fontFamily: fonts.demi },
-  body: { fontSize: 17, lineHeight: 23, fontFamily: fonts.medium },
-  callout: { fontSize: 16, lineHeight: 21, fontFamily: fonts.medium },
-  subhead: { fontSize: 15, lineHeight: 20, fontFamily: fonts.medium },
-  footnote: { fontSize: 13, lineHeight: 18, fontFamily: fonts.demi },
-  caption: { fontSize: 12, lineHeight: 16, fontFamily: fonts.demi },
+  title1: { fontSize: 30, lineHeight: 36, fontFamily: fonts.heavy, ...webWeight("800") },
+  title2: { fontSize: 23, lineHeight: 29, fontFamily: fonts.heavy, ...webWeight("800") },
+  title3: { fontSize: 20, lineHeight: 26, fontFamily: fonts.bold, ...webWeight("700") },
+  headline: { fontSize: 17, lineHeight: 22, fontFamily: fonts.demi, ...webWeight("600") },
+  body: { fontSize: 17, lineHeight: 23, fontFamily: fonts.medium, ...webWeight("500") },
+  callout: { fontSize: 16, lineHeight: 21, fontFamily: fonts.medium, ...webWeight("500") },
+  subhead: { fontSize: 15, lineHeight: 20, fontFamily: fonts.medium, ...webWeight("500") },
+  footnote: { fontSize: 13, lineHeight: 18, fontFamily: fonts.demi, ...webWeight("600") },
+  caption: { fontSize: 12, lineHeight: 16, fontFamily: fonts.demi, ...webWeight("600") },
   sticker: { fontSize: 19, lineHeight: 23, fontFamily: fonts.display },
 } as const;
 
