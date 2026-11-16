@@ -1,3 +1,4 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { BlurView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import { SymbolView } from "expo-symbols";
@@ -27,7 +28,50 @@ import type { TypeVariant } from "../lib/theme";
 /** An SF Symbol name, e.g. "checkmark.circle.fill". */
 export type SymbolName = ComponentProps<typeof SymbolView>["name"];
 
-/** SF Symbol (iOS). Renders an empty box of the same size on platforms without symbols. */
+const WEB_ICONS: Record<string, ComponentProps<typeof Ionicons>["name"]> = {
+  "bolt.fill": "flash",
+  camera: "camera-outline",
+  checkmark: "checkmark",
+  heart: "heart-outline",
+  house: "home-outline",
+  message: "chatbubble-outline",
+  moon: "moon-outline",
+  pencil: "pencil",
+  plus: "add",
+  sofa: "bed-outline",
+  sparkles: "sparkles",
+  sunrise: "partly-sunny-outline",
+  sunset: "cloudy-night-outline",
+  xmark: "close",
+  "bubble.left": "chatbubble-outline",
+  "camera.fill": "camera",
+  "checkmark.circle.fill": "checkmark-circle",
+  "checkmark.seal.fill": "checkmark-done-circle",
+  "chevron.left": "chevron-back",
+  "chevron.right": "chevron-forward",
+  "doc.on.doc": "copy-outline",
+  "figure.walk": "walk",
+  "gift.fill": "gift",
+  "hand.raised.fill": "hand-left",
+  "message.badge": "chatbubble-ellipses-outline",
+  "message.fill": "chatbubble",
+  "moon.fill": "moon",
+  "moon.stars.fill": "moon",
+  "party.popper.fill": "sparkles",
+  "person.2": "people-outline",
+  "person.2.fill": "people",
+  "person.3": "people-outline",
+  "person.3.fill": "people",
+  "person.badge.plus": "person-add",
+  "phone.bubble": "call",
+  "photo.on.rectangle": "images",
+  "play.fill": "play",
+  "square.and.arrow.up": "share-outline",
+  "sun.max": "sunny-outline",
+  "sun.max.fill": "sunny",
+};
+
+/** SF Symbol (iOS), Ionicons on web. Renders an empty box of the same size on platforms without symbols. */
 export function Icon({
   name,
   size = 22,
@@ -41,6 +85,13 @@ export function Icon({
   weight?: ComponentProps<typeof SymbolView>["weight"];
   style?: StyleProp<ViewStyle>;
 }) {
+  if (Platform.OS === "web") {
+    return (
+      <View style={[{ width: size, height: size, alignItems: "center", justifyContent: "center" }, style]}>
+        <Ionicons name={WEB_ICONS[name as string] ?? "ellipse"} size={size} color={color} />
+      </View>
+    );
+  }
   return (
     <SymbolView
       name={name}
@@ -77,7 +128,7 @@ export function Text({
       style={[
         type[variant],
         { color, textAlign: align },
-        weight && type[variant].fontFamily !== fonts.display ? { fontFamily: fontForWeight(weight) } : null,
+        weight && type[variant].fontFamily !== fonts.display ? { fontFamily: fontForWeight(weight), ...(Platform.OS === "web" ? { fontWeight: weight } : null) } : null,
         style,
       ]}
     >

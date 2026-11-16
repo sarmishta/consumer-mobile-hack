@@ -1,6 +1,7 @@
 import { httpRouter } from "convex/server";
+import { registerStaticRoutes } from "@convex-dev/static-hosting";
 import { httpAction } from "./_generated/server";
-import { internal } from "./_generated/api";
+import { components, internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import { normalizePhone, replyForCrews, secretsMatch } from "./keiki";
 
@@ -67,5 +68,7 @@ http.route({
     });
   }),
 });
+
+registerStaticRoutes(http, components.staticHosting);
 
 export default http;
