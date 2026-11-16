@@ -92,6 +92,13 @@ in `convex/http.ts`) at https://peaceful-pony-277.convex.site, with fallbacks fo
 icons, fonts and storage on web. Fixed web text inputs losing focus (#14). One
 warm peach palette across the app (#15).
 
+### 2026-11-16 - ad8ed90 (Revyl round 4)
+After redeploying Convex to dev, Revyl round 4 (T6d) ran main ad8ed90 on a cloud
+iPhone 17 Pro Max with no crashes. It covered fresh onboarding with a dare stake,
+one-tap check-in, End day and the raincheck moment, cash-in with party Drizzle,
+and the reel ending on Luna. Text in the peach palette stayed legible, and
+`/checkin` still returned 401 without auth.
+
 ## Not done or not verified
 
 - No real auth: the session is a stored user id on the device.
@@ -99,6 +106,7 @@ warm peach palette across the app (#15).
   Android, or real push notifications.
 - Since #9, the text-nudge phone step only saves the number; scheduled nudge
   texts are Keiki's side and aren't verified here.
-- After T6c, #12 added the Crew-tab switcher fix and the placeholder spacing fix,
-  and #15 changed the palette. No Revyl run has covered any of these.
+- Revyl round 4 (T6d) re-ran main ad8ed90 with the #15 palette and passed, but
+  it didn't specifically exercise the two #12 follow-ups after T6c (the Crew-tab
+  switcher and the join-goal placeholder spacing).
 - The judge link runs on the shared dev deployment, not a production deployment.
