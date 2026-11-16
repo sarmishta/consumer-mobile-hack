@@ -399,8 +399,8 @@ export function Row({
     >
       {left ??
         (icon ? (
-          <View style={[styles.rowIcon, { backgroundColor: iconColor }]}>
-            <Icon name={icon} size={17} color={colors.white} weight="semibold" />
+          <View style={[styles.rowIcon, { backgroundColor: colors.accentSoft }]}>
+            <Icon name={icon} size={17} color={colors.accentDeep} weight="semibold" />
           </View>
         ) : null)}
       <View style={{ flex: 1 }}>
@@ -662,8 +662,8 @@ const styles = StyleSheet.create({
   buttonPrimary: {
     backgroundColor: colors.accent,
     borderBottomWidth: 4,
-    borderBottomColor: "#E09A00",
-    shadowColor: "#B86E00",
+    borderBottomColor: colors.accentDeep,
+    shadowColor: colors.shadow,
     shadowOpacity: 0.25,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 6 },
@@ -674,7 +674,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     overflow: "hidden",
     borderWidth: 2,
-    borderColor: "#F3E6D3",
+    borderColor: colors.separator,
   },
   sectionTitle: { marginLeft: spacing.lg, marginBottom: spacing.sm },
   sectionFooter: { marginHorizontal: spacing.lg, marginTop: spacing.sm },
@@ -697,7 +697,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     borderRadius: radius.pill,
     borderWidth: 2,
-    borderColor: "#F3E6D3",
+    borderColor: colors.separator,
     backgroundColor: colors.surface,
   },
   chipSelected: { backgroundColor: colors.accent, borderColor: colors.label },
@@ -727,7 +727,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: radius.md,
     borderWidth: 2,
-    borderColor: "#F3E6D3",
+    borderColor: colors.separator,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md + 2,
   },

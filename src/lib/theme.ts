@@ -1,49 +1,64 @@
 import { Platform } from "react-native";
 import type { TextStyle } from "react-native";
 
-/** Vivid light social-camera design tokens. Import from "@/lib/theme" or a relative path. */
+/** Warm peach design tokens. Every color in the app comes from here. */
 export const colors = {
-  /** Warm cream screen background. */
-  bg: "#FFF6EA",
+  /** Cream screen background. */
+  bg: "#FFF6EE",
   /** Cards, rows, sheets. */
   surface: "#FFFFFF",
+  /** Secondary warm surface. */
+  surfaceAlt: "#FFFBF7",
   /** Pressed state for rows and plain surfaces. */
-  surfacePressed: "#F6ECDD",
-  /** Neutral fill for placeholders, tracks, and inactive chips. */
-  fill: "#F4EADB",
-  separator: "#EADFCF",
-  label: "#17131F",
-  secondaryLabel: "#6E6577",
-  tertiaryLabel: "#B3AABB",
-  /** Sunny amber accent. Use accentInk for text and icons on white; accent for fills. */
-  accent: "#FFC233",
-  accentInk: "#B86E00",
-  accentSoft: "#FFF0C7",
-  /** Text color on an accent fill. */
-  onAccent: "#1F1400",
-  /** Rain blue secondary. */
-  rain: "#2F6BFF",
-  rainSoft: "#E2ECFF",
-  /** Coral for rainchecks. */
-  coral: "#FF5A4E",
-  coralSoft: "#FFE4E0",
-  grape: "#7B5CFF",
-  grapeSoft: "#EEE8FF",
-  mint: "#1FC98E",
-  mintSoft: "#DDF8EC",
-  success: "#1DBF73",
-  danger: "#FF3B30",
+  surfacePressed: "#FBEADF",
+  /** Tracks, placeholders and inactive chips. */
+  fill: "#FBEADF",
+  separator: "#F1DCCD",
+  /** Warm dark brown ink. */
+  label: "#3B2A22",
+  secondaryLabel: "#8A6F62",
+  tertiaryLabel: "#C4AB9D",
+  /** Peach. Fills for buttons and selected chips. */
+  accent: "#FFB38A",
+  /** Terracotta. Emphasis, pressed edges, text and icons on light surfaces. */
+  accentDeep: "#E8744F",
+  accentInk: "#C25A36",
+  /** Soft peach tint for cards, stickers and placeholders. */
+  accentSoft: "#FFE3D3",
+  /** Text on a peach fill. */
+  onAccent: "#3B2A22",
+  /** Kept for older call sites; now part of the peach family. */
+  rain: "#E8744F",
+  rainSoft: "#FFE3D3",
+  /** Dusty coral for rainchecks. */
+  coral: "#E46B5A",
+  coralSoft: "#FBE1DA",
+  /** Warm plum-brown for the dusk moment. */
+  grape: "#6B4246",
+  grapeSoft: "#F3E2DC",
+  /** Muted sage for success. */
+  mint: "#7FAF8A",
+  mintSoft: "#E4EFE5",
+  success: "#7FAF8A",
+  danger: "#E46B5A",
   white: "#FFFFFF",
+  /** White text on colored blocks. */
+  onColor: "rgba(255,255,255,0.88)",
+  onColorFaint: "rgba(255,255,255,0.3)",
+  /** Modal scrim and photo-chip scrim. */
+  scrim: "rgba(59,42,34,0.4)",
+  /** Warm shadow. */
+  shadow: "#7A4A33",
 };
 
-/** Gradient stops for expo-linear-gradient. story is the ring for whoever checked in today. */
+/** Gradient stops for expo-linear-gradient: all peach and apricot, plus one dusk for Luna. */
 export const gradients = {
-  story: ["#FFB547", "#FF6B5B", "#3D7BF7"],
-  sunrise: ["#FFD45C", "#FF9A3D"],
-  coral: ["#FF8A5B", "#FF4F6D"],
-  rain: ["#4D8BFF", "#7B5CFF"],
-  night: ["#2B2D6E", "#6A43E0"],
-  mint: ["#2EDC9B", "#1FA9C9"],
+  story: ["#E8744F", "#E8744F"],
+  sunrise: ["#F7A47C", "#E8744F"],
+  coral: ["#EC8D78", "#DC6655"],
+  rain: ["#F5A27C", "#EE8B67"],
+  night: ["#4E3236", "#7A4B4C"],
+  mint: ["#F2AE86", "#DE845E"],
 } as const satisfies Record<string, readonly [string, string, ...string[]]>;
 
 /** Font faces. Avenir Next ships with iOS; Lilita One loads through @expo-google-fonts in the root layout. */

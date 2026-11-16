@@ -4,9 +4,9 @@ import { Blush, Eye, Idle, outline, sparklePath, useBlink } from "./shared";
 
 export type LunaMood = "happy" | "wink";
 
-const YELLOW = "#FFCB47";
-const YELLOW_LIGHT = "#FFE594";
-const YELLOW_DEEP = "#E8A322";
+const YELLOW = "#F7C48E";
+const YELLOW_LIGHT = "#FCE0BE";
+const YELLOW_DEEP = "#D98A4E";
 const MOON = "M78 13 A49 49 0 1 0 105 82 A37.5 37.5 0 0 1 78 13 Z";
 
 /** Luna, the good-night crescent moon. */
@@ -35,8 +35,8 @@ export function Luna({
 
         <Eye x={30} y={58} r={4.4} kind={blink ? "shut" : "dot"} />
         <Eye x={49} y={55} r={4.4} kind={mood === "wink" ? "joy" : blink ? "shut" : "dot"} />
-        <Blush x={24} y={68} rx={5} ry={3} color="#FF8A4C" />
-        <Blush x={54} y={64.5} rx={5} ry={3} color="#FF8A4C" />
+        <Blush x={24} y={68} rx={5} ry={3} color="#E8744F" />
+        <Blush x={54} y={64.5} rx={5} ry={3} color="#E8744F" />
         <Path
           d={mood === "wink" ? "M33 67 Q40 75 47 64" : "M34 67 Q40 73 46 65.5"}
           fill="none"

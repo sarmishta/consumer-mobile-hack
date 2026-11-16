@@ -13,7 +13,7 @@ import Animated, {
 import { Circle, Ellipse, G, Path } from "react-native-svg";
 
 /** The one outline colour every character shares. */
-export const INK = "#2B2B2B";
+export const INK = "#3B2A22";
 /** Outline width in the 120-unit drawing grid. */
 export const LINE = 4.5;
 
@@ -133,12 +133,12 @@ export function Eye({
   );
 }
 
-export function Blush({ x, y, rx = 6, ry = 3.6, color = "#FF8E7A" }: { x: number; y: number; rx?: number; ry?: number; color?: string }) {
+export function Blush({ x, y, rx = 6, ry = 3.6, color = "#F0A08E" }: { x: number; y: number; rx?: number; ry?: number; color?: string }) {
   return <Ellipse cx={x} cy={y} rx={rx} ry={ry} fill={color} opacity={0.8} />;
 }
 
 /** Small umbrella centred on its pole top, canopy about 44 units wide. Shared by Drizzle and the Umbrella icon. */
-export function UmbrellaShape({ color = "#FF6B5B", stripe = "#FFD45C" }: { color?: string; stripe?: string }) {
+export function UmbrellaShape({ color = "#E46B5A", stripe = "#F7C48E" }: { color?: string; stripe?: string }) {
   return (
     <G>
       <Path d="M0 -22 V20 Q0 27 5.5 27 Q10 27 10 22" fill="none" {...outline} strokeWidth={4} />

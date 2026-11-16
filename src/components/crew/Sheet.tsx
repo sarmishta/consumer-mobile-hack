@@ -6,7 +6,7 @@ export function Sheet({ visible, onClose, children }: { visible: boolean; onClos
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
-      <Pressable style={{ flex: 1, backgroundColor: "rgba(23,19,31,0.45)" }} onPress={onClose} />
+      <Pressable style={{ flex: 1, backgroundColor: colors.scrim }} onPress={onClose} />
       <View
         style={{
           backgroundColor: colors.surface,

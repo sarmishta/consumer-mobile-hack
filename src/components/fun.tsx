@@ -70,7 +70,7 @@ export function Sticker({
           paddingVertical: size === "sm" ? spacing.xxs + 1 : spacing.xs + 2,
           borderWidth: 3,
           borderColor: colors.white,
-          shadowColor: "#2A1A00",
+          shadowColor: colors.shadow,
           shadowOpacity: 0.18,
           shadowRadius: 8,
           shadowOffset: { width: 0, height: 4 },

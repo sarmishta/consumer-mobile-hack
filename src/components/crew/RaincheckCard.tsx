@@ -20,7 +20,7 @@ export function RaincheckCard({
           <Text variant="title3" color={colors.white} weight="800">
             {raincheck.name} owes the crew
           </Text>
-          <Text variant="footnote" color="rgba(255,255,255,0.85)">
+          <Text variant="footnote" color={colors.onColor}>
             Rain on {formatDay(raincheck.day)}
           </Text>
         </View>

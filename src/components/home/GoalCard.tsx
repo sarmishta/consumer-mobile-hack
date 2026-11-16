@@ -55,7 +55,7 @@ export function GoalCard({
       <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.md }}>
         <Drizzle size={96} mood={pumped ? "pumped" : mine ? "happy" : "sleepy"} style={{ margin: -14 }} />
         <View style={{ flex: 1 }}>
-          <Text variant="caption" color="rgba(255,255,255,0.8)" weight="800" style={{ letterSpacing: 0.8 }}>
+          <Text variant="caption" color={colors.onColor} weight="800" style={{ letterSpacing: 0.8 }}>
             MY GOAL
           </Text>
           <Text variant="title2" color={colors.white} numberOfLines={2}>
@@ -69,7 +69,7 @@ export function GoalCard({
           <Text variant="largeTitle" color={colors.white} style={{ fontSize: 30, lineHeight: 32 }}>
             {streak}
           </Text>
-          <Text variant="caption" color="rgba(255,255,255,0.85)" weight="700">
+          <Text variant="caption" color={colors.onColor} weight="700">
             {streak === 1 ? "day" : "days"}
           </Text>
         </View>

@@ -50,7 +50,7 @@ export default function Reel() {
               flex: 1,
               height: 4,
               borderRadius: radius.pill,
-              backgroundColor: i <= current ? colors.white : "rgba(255,255,255,0.35)",
+              backgroundColor: i <= current ? colors.white : colors.onColorFaint,
             }}
           />
         ))}
@@ -93,7 +93,7 @@ export default function Reel() {
           )}
           <Text
             variant="sticker"
-            color="rgba(255,255,255,0.85)"
+            color={colors.onColor}
             style={{ position: "absolute", bottom: spacing.lg, letterSpacing: 2 }}
           >
             RAINCHECK
@@ -124,7 +124,7 @@ export default function Reel() {
 
       <View style={{ padding: spacing.lg, backgroundColor: slide?.background ?? colors.grape }}>
         {Platform.OS !== "web" && (
-          <Button testID="reel-share" label="Share to Stories" icon="square.and.arrow.up" style={{ backgroundColor: colors.white, borderBottomColor: "rgba(0,0,0,0.12)" }} loading={sharing} disabled={!slide} onPress={share} />
+          <Button testID="reel-share" label="Share to Stories" icon="square.and.arrow.up" style={{ backgroundColor: colors.white, borderBottomColor: colors.separator }} loading={sharing} disabled={!slide} onPress={share} />
         )}
       </View>
     </SafeAreaView>
