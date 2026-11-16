@@ -1,5 +1,5 @@
 import { useQuery } from "convex/react";
-import { router } from "expo-router";
+import { router, useIsFocused } from "expo-router";
 import { useSyncExternalStore } from "react";
 import { Modal, Text as RNText, ScrollView, View } from "react-native";
 import { api } from "../../../convex/_generated/api";
@@ -35,7 +35,8 @@ export function CrewName({ name }: { name: string }) {
 }
 
 export function CrewSwitcherSheet() {
-  const visible = useSyncExternalStore(subscribe, () => open);
+  const focused = useIsFocused();
+  const visible = useSyncExternalStore(subscribe, () => open) && focused;
   const { userId, setActiveGroupId } = useSession();
   const { group } = useCurrentMember();
   const crews = useQuery(api.crews.mine, visible && userId ? { userId } : "skip");
@@ -55,7 +56,7 @@ export function CrewSwitcherSheet() {
           <Button testID="crew-switcher-close" label="Done" variant="plain" small onPress={() => setOpen(false)} />
         </View>
         <ScrollView contentContainerStyle={{ paddingBottom: spacing.huge }}>
-          <Section>
+          <Section style={{ marginHorizontal: spacing.lg }}>
             {(crews ?? []).map(({ group: g, people }) => (
               <Row
                 key={g._id}

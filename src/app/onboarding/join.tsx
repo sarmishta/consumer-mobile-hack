@@ -56,7 +56,7 @@ export default function JoinWithCode() {
           autoFocus
           returnKeyType="done"
           maxLength={6}
-          style={{ fontSize: 32, fontWeight: "700", letterSpacing: 8, textAlign: "center" }}
+          style={{ height: 64, fontSize: 32, lineHeight: 38, fontWeight: "700", letterSpacing: 8, textAlign: "center" }}
         />
         {error ? (
           <Text variant="footnote" color={colors.danger} style={{ marginTop: spacing.sm }}>

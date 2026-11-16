@@ -10,6 +10,7 @@ import { RaincheckMoment } from "../../components/crew/RaincheckMoment";
 import { Sheet } from "../../components/crew/Sheet";
 import { formatDay } from "../../components/crew/format";
 import { StakePicker } from "../../components/onboarding/StakePicker";
+import { STAKE_KINDS } from "../../components/onboarding/options";
 import type { StakeKind } from "../../components/onboarding/options";
 import { Flame } from "../../components/characters";
 import { Sticker } from "../../components/fun";
@@ -113,7 +114,7 @@ export default function Crew() {
           testID="edit-stake"
           title="What you owe"
           value={group.hangout ?? "Not set"}
-          icon="gift.fill"
+          icon={STAKE_KINDS.find((k) => k.kind === group.stakeKind)?.icon ?? "gift.fill"}
           iconColor={colors.coral}
           onPress={() => setStakeDraft({ kind: group.stakeKind ?? null, stake: group.hangout ?? "" })}
         />

@@ -1,5 +1,10 @@
+import { useMutation } from "convex/react";
+import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import { Image, View } from "react-native";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
 import { colors, gradients, radius, spacing } from "../../lib/theme";
 import { Drizzle, Flame } from "../characters";
 import { GradientCard, Sticker } from "../fun";
@@ -7,20 +12,48 @@ import { Button, Text } from "../ui";
 import type { FeedEntry } from "./FeedItem";
 
 export function GoalCard({
+  memberId,
   emoji,
   goal,
   streak,
   mine,
 }: {
+  memberId: Id<"members">;
   emoji: string | null;
   goal: string | null;
   streak: number;
   mine: FeedEntry | null;
 }) {
+  const checkIn = useMutation(api.checkins.checkIn);
+  const [busy, setBusy] = useState(false);
+  const [pumped, setPumped] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!pumped) return;
+    const timer = setTimeout(() => setPumped(false), 2000);
+    return () => clearTimeout(timer);
+  }, [pumped]);
+
+  const oneTapCheckIn = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      await checkIn({ memberId, source: "app" });
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setPumped(true);
+    } catch (e) {
+      console.warn("Check-in failed", e);
+      setError("Couldn't check in. Try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <GradientCard colors={gradients.rain}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.md }}>
-        <Drizzle size={96} mood={mine ? "happy" : "sleepy"} style={{ margin: -14 }} />
+        <Drizzle size={96} mood={pumped ? "pumped" : mine ? "happy" : "sleepy"} style={{ margin: -14 }} />
         <View style={{ flex: 1 }}>
           <Text variant="caption" color="rgba(255,255,255,0.8)" weight="800" style={{ letterSpacing: 0.8 }}>
             MY GOAL
@@ -72,7 +105,22 @@ export function GoalCard({
             ) : null}
           </View>
         ) : (
-          <Button testID="check-in-button" label="Check in" icon="checkmark" haptic onPress={() => router.push("/checkin")} />
+          <View style={{ gap: spacing.sm }}>
+            <Button testID="check-in-button" label="Check in" icon="checkmark" haptic loading={busy} onPress={oneTapCheckIn} />
+            <Button
+              testID="checkin-with-photo"
+              label="Add a photo or note"
+              variant="secondary"
+              small
+              icon="camera.fill"
+              onPress={() => router.push("/checkin")}
+            />
+            {error ? (
+              <Text variant="footnote" color={colors.white} weight="700" align="center">
+                {error}
+              </Text>
+            ) : null}
+          </View>
         )}
       </View>
     </GradientCard>
